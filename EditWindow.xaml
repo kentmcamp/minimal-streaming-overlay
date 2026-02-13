@@ -1,0 +1,59 @@
+<Window x:Class="minol.EditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Edit Overlay" Height="350" Width="320" WindowStartupLocation="CenterOwner" ResizeMode="CanResize">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Font Family"/>
+        <ComboBox x:Name="FontFamilyCombo" Grid.Row="0" Margin="0,20,0,0"/>
+
+        <TextBlock Grid.Row="1" Text="Font Size" Margin="0,10,0,0"/>
+        <ComboBox x:Name="FontSizeCombo" Grid.Row="1" Margin="0,30,0,0"/>
+
+        <TextBlock Grid.Row="2" Text="Font Color" Margin="0,10,0,0"/>
+        <ComboBox x:Name="FontColorCombo" Grid.Row="2" Margin="0,30,0,0"/>
+
+        <TextBlock Grid.Row="3" Text="Background Color" Margin="0,10,0,0"/>
+        <ComboBox x:Name="BackgroundColorCombo" Grid.Row="3" Margin="0,30,0,0"/>
+
+        <TextBlock Grid.Row="4" Text="Background Opacity" Margin="0,10,0,0"/>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,30,0,0">
+            <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Value="0.5" Width="140" TickFrequency="0.05" IsSnapToTickEnabled="False"/>
+            <TextBlock x:Name="OpacityValue" Margin="8,0,0,0" VerticalAlignment="Center" Width="40"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="5" Text="Key Font Family" Margin="0,10,0,0"/>
+        <ComboBox x:Name="KeyFontFamilyCombo" Grid.Row="5" Margin="0,30,0,0"/>
+
+        <TextBlock Grid.Row="6" Text="Key Font Color" Margin="0,10,0,0"/>
+        <ComboBox x:Name="KeyFontColorCombo" Grid.Row="6" Margin="0,30,0,0"/>
+
+        <TextBlock Grid.Row="7" Text="Key Display Font Size" Margin="0,10,0,0"/>
+        <ComboBox x:Name="KeyFontSizeCombo" Grid.Row="7" Margin="0,30,0,0"/>
+
+        <TextBlock Grid.Row="8" Text="Key Show / Fade (sec)" Margin="0,10,0,0"/>
+        <StackPanel Grid.Row="8" Orientation="Horizontal" Margin="0,30,0,0">
+            <TextBox x:Name="KeyShowBox" Width="60" Margin="0,0,8,0"/>
+            <TextBox x:Name="KeyFadeBox" Width="60"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button x:Name="ApplyButton" Content="Apply" Width="80" Margin="0,0,8,0" Click="ApplyButton_Click"/>
+            <Button Content="Close" Width="80" Click="CloseButton_Click"/>
+        </StackPanel>
+    </Grid>
+    </ScrollViewer>
+</Window>
