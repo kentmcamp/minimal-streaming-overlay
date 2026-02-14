@@ -25,6 +25,10 @@ public partial class MainWindow : Window
     private const int WM_SYSKEYDOWN = 0x0104;
     private const int WM_SYSKEYUP = 0x0105;
 
+    // Click vs drag detection
+    private System.Windows.Point mouseDownPos;
+    private bool isDragging = false;
+
     // Key display settings
     private System.Windows.Media.FontFamily keyFontFamily = new System.Windows.Media.FontFamily("Segoe UI");
     private double keyFontSize = 28d;
@@ -50,6 +54,8 @@ public partial class MainWindow : Window
         timer.Start();
 
         this.MouseLeftButtonDown += Window_MouseLeftButtonDown;
+        this.MouseLeftButtonUp += Window_MouseLeftButtonUp;
+        this.MouseMove += Window_MouseMove;
         this.PreviewKeyDown += Window_PreviewKeyDown;
         this.PreviewKeyUp += Window_PreviewKeyUp;
         this.Loaded += (s, e) => Keyboard.Focus(this);
@@ -70,14 +76,48 @@ public partial class MainWindow : Window
 
     private void Window_MouseLeftButtonDown(object? sender, MouseButtonEventArgs e)
     {
-        if (e.ChangedButton == MouseButton.Left && e.ButtonState == MouseButtonState.Pressed)
+        mouseDownPos = e.GetPosition(this);
+        isDragging = false;
+    }
+
+    private void Window_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
         {
-            try
+            var currentPos = e.GetPosition(this);
+            var delta = currentPos - mouseDownPos;
+
+            // If moved more than 5px, it's a drag
+            if (Math.Abs(delta.X) > 5 || Math.Abs(delta.Y) > 5)
             {
-                this.DragMove();
+                if (!isDragging)
+                {
+                    isDragging = true;
+                    try
+                    {
+                        this.DragMove();
+                    }
+                    catch { }
+                }
             }
-            catch { }
         }
+    }
+
+    private void Window_MouseLeftButtonUp(object? sender, MouseButtonEventArgs e)
+    {
+        // If not dragging, it's a click — toggle pause
+        if (!isDragging)
+        {
+            TogglePause();
+        }
+    }
+
+    private void TogglePause()
+    {
+        if (stopwatch.IsRunning)
+            stopwatch.Stop();
+        else
+            stopwatch.Start();
     }
 
     private void Window_PreviewKeyDown(object? sender, KeyEventArgs e)

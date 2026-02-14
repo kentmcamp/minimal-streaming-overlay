@@ -31,7 +31,7 @@ public partial class EditWindow : Window
         KeyFontFamilyCombo.ItemsSource = families;
 
         // Colors list
-        string[] colors = new string[] { "White", "Black", "Red", "Green", "Blue", "Yellow", "Gray", "Orange", "Purple" };
+        string[] colors = new string[] { "White", "Black", "Red", "Green", "Blue", "Yellow", "Gray", "Orange", "Purple", "Pink", "Teal", "LightGray", "DarkGray", "DarkBlue", "DarkMagenta" };
         FontColorCombo.ItemsSource = colors;
         BackgroundColorCombo.ItemsSource = colors;
         KeyFontColorCombo.ItemsSource = colors;
@@ -92,7 +92,7 @@ public partial class EditWindow : Window
     private string? GetColorName(Color color)
     {
         // Map color to the available colors in the dropdown
-        string[] availableColors = new string[] { "White", "Black", "Red", "Green", "Blue", "Yellow", "Gray", "Orange", "Purple" };
+        string[] availableColors = new string[] { "White", "Black", "Red", "Green", "Blue", "Yellow", "Gray", "Orange", "Purple", "Pink", "Teal", "LightGray", "DarkGray", "DarkBlue", "DarkMagenta" };
 
         foreach (var colorName in availableColors)
         {
@@ -137,5 +137,11 @@ public partial class EditWindow : Window
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
         this.Close();
+    }
+
+    private void About_Click(object sender, RoutedEventArgs e)
+    {
+        var about = new AboutWindow() { Owner = this };
+        about.ShowDialog();
     }
 }
