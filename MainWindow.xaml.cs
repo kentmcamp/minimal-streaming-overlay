@@ -13,7 +13,10 @@ public partial class MainWindow : Window
     private Stopwatch stopwatch = new Stopwatch();
     private DispatcherTimer timer = new DispatcherTimer();
     private DispatcherTimer keyHideTimer = new DispatcherTimer();
+    private DispatcherTimer chordDisplayTimer = new DispatcherTimer();
     private System.Collections.Generic.HashSet<System.Windows.Input.Key> keysDown = new System.Collections.Generic.HashSet<System.Windows.Input.Key>();
+    private string frozenChordText = string.Empty;
+    private bool isChordFrozen = false;
 
     // Global keyboard hook fields
     private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -29,23 +32,43 @@ public partial class MainWindow : Window
     private System.Windows.Point mouseDownPos;
     private bool isDragging = false;
 
+    // Timer display settings
+    private System.Windows.Media.FontFamily timerFontFamily = new System.Windows.Media.FontFamily("Consolas");
+    private double timerFontSize = 36d;
+    private System.Windows.Media.Color timerForegroundColor = System.Windows.Media.Colors.Lime;
+    private System.Windows.Media.Color timerBackgroundColor = System.Windows.Media.Colors.Black;
+    private double timerBackgroundOpacity = 0.5d;
+
     // Key display settings
-    private System.Windows.Media.FontFamily keyFontFamily = new System.Windows.Media.FontFamily("Segoe UI");
+    private System.Windows.Media.FontFamily keyFontFamily = new System.Windows.Media.FontFamily("Consolas");
     private double keyFontSize = 28d;
     private System.Windows.Media.Color keyForegroundColor = System.Windows.Media.Colors.Lime;
-    private double keyShowSeconds = 1.2d;
-    private double keyFadeSeconds = 0.6d;
+    private double keyShowSeconds = 2d;
+    private double keyFadeSeconds = 0.5d;
+    private double keyChordHoldSeconds = 0.3d;  // Time to hold chord after partial release
 
     // Public properties to read config settings
+    public System.Windows.Media.FontFamily TimerFontFamily => timerFontFamily;
+    public double TimerFontSize => timerFontSize;
+    public System.Windows.Media.Color TimerForegroundColor => timerForegroundColor;
+    public System.Windows.Media.Color TimerBackgroundColor => timerBackgroundColor;
+    public double TimerBackgroundOpacity => timerBackgroundOpacity;
+
     public System.Windows.Media.FontFamily KeyFontFamily => keyFontFamily;
     public double KeyFontSize => keyFontSize;
     public System.Windows.Media.Color KeyForegroundColor => keyForegroundColor;
     public double KeyShowSeconds => keyShowSeconds;
     public double KeyFadeSeconds => keyFadeSeconds;
+    public double KeyChordHoldSeconds => keyChordHoldSeconds;
 
     public MainWindow()
     {
         InitializeComponent();
+
+        // Load settings from file
+        var settings = AppSettings.Load();
+        LoadSettingsIntoVariables(settings);
+        ApplyUISettings();
 
         stopwatch.Start();
 
@@ -61,6 +84,7 @@ public partial class MainWindow : Window
         this.Loaded += (s, e) => Keyboard.Focus(this);
 
         keyHideTimer.Tick += KeyHideTimer_Tick;
+        chordDisplayTimer.Tick += ChordDisplayTimer_Tick;
 
         // global keyboard hook
         _proc = HookCallback;
@@ -139,13 +163,25 @@ public partial class MainWindow : Window
 
         if (keysDown.Count == 0)
         {
+            // All keys released, unfreeze if frozen and start hide timer
+            isChordFrozen = false;
+            chordDisplayTimer.Stop();
             keyHideTimer.Stop();
             keyHideTimer.Interval = TimeSpan.FromSeconds(keyShowSeconds);
             keyHideTimer.Start();
         }
-        else
+        else if (!isChordFrozen)
         {
-            UpdateKeyDisplay();
+            // Some keys still down but chord not yet frozen.
+            // Capture current display and freeze it.
+            frozenChordText = KeyText.Text;
+            if (!string.IsNullOrEmpty(frozenChordText))
+            {
+                isChordFrozen = true;
+                chordDisplayTimer.Stop();
+                chordDisplayTimer.Interval = TimeSpan.FromSeconds(keyChordHoldSeconds);
+                chordDisplayTimer.Start();
+            }
         }
 
         e.Handled = false;
@@ -238,6 +274,21 @@ public partial class MainWindow : Window
         KeyText.BeginAnimation(UIElement.OpacityProperty, fade);
     }
 
+    private void ChordDisplayTimer_Tick(object? sender, EventArgs e)
+    {
+        chordDisplayTimer.Stop();
+        isChordFrozen = false;
+
+        // Chord hold time expired, now check if all keys are truly released
+        if (keysDown.Count == 0)
+        {
+            // Yes, all keys released - start the hide timer
+            keyHideTimer.Stop();
+            keyHideTimer.Interval = TimeSpan.FromSeconds(keyShowSeconds);
+            keyHideTimer.Start();
+        }
+    }
+
     private void Start_Click(object sender, RoutedEventArgs e)
     {
         if (!stopwatch.IsRunning)
@@ -272,22 +323,86 @@ public partial class MainWindow : Window
 
     public void ApplyOverlaySettings(System.Windows.Media.FontFamily fontFamily, double fontSize, System.Windows.Media.Color foregroundColor, System.Windows.Media.Color backgroundColor, double backgroundOpacity)
     {
-        TimeText.FontFamily = fontFamily;
-        TimeText.FontSize = fontSize;
-        TimeText.Foreground = new System.Windows.Media.SolidColorBrush(foregroundColor);
+        timerFontFamily = fontFamily ?? timerFontFamily;
+        timerFontSize = fontSize;
+        timerForegroundColor = foregroundColor;
+        timerBackgroundColor = backgroundColor;
+        timerBackgroundOpacity = backgroundOpacity;
 
-        var brush = new System.Windows.Media.SolidColorBrush(backgroundColor);
-        brush.Opacity = backgroundOpacity;
+        TimeText.FontFamily = timerFontFamily;
+        TimeText.FontSize = timerFontSize;
+        TimeText.Foreground = new System.Windows.Media.SolidColorBrush(timerForegroundColor);
+
+        var brush = new System.Windows.Media.SolidColorBrush(timerBackgroundColor);
+        brush.Opacity = timerBackgroundOpacity;
         RootGrid.Background = brush;
+
+        // Save to settings file
+        SaveSettingsToFile();
     }
 
-    public void ApplyKeyDisplaySettings(System.Windows.Media.FontFamily fontFamily, double fontSize, System.Windows.Media.Color foregroundColor, double showSeconds, double fadeSeconds)
+    public void ApplyKeyDisplaySettings(System.Windows.Media.FontFamily fontFamily, double fontSize, System.Windows.Media.Color foregroundColor, double showSeconds, double fadeSeconds, double chordHoldSeconds = 0.3d)
     {
         keyFontFamily = fontFamily ?? keyFontFamily;
         keyFontSize = fontSize;
         keyForegroundColor = foregroundColor;
         keyShowSeconds = showSeconds;
         keyFadeSeconds = fadeSeconds;
+        keyChordHoldSeconds = chordHoldSeconds;
+
+        // Save to settings file
+        SaveSettingsToFile();
+    }
+
+    private void LoadSettingsIntoVariables(AppSettings settings)
+    {
+        // Timer settings
+        try { timerFontFamily = new System.Windows.Media.FontFamily(settings.TimerFontFamily); } catch { }
+        timerFontSize = settings.TimerFontSize;
+        timerForegroundColor = AppSettings.ParseColor(settings.TimerForegroundColor);
+        timerBackgroundColor = AppSettings.ParseColor(settings.TimerBackgroundColor);
+        timerBackgroundOpacity = settings.TimerBackgroundOpacity;
+
+        // Key settings
+        try { keyFontFamily = new System.Windows.Media.FontFamily(settings.KeyFontFamily); } catch { }
+        keyFontSize = settings.KeyFontSize;
+        keyForegroundColor = AppSettings.ParseColor(settings.KeyForegroundColor);
+        keyShowSeconds = settings.KeyShowSeconds;
+        keyFadeSeconds = settings.KeyFadeSeconds;
+        keyChordHoldSeconds = settings.KeyChordHoldSeconds;
+    }
+
+    private void ApplyUISettings()
+    {
+        // Apply timer display
+        TimeText.FontFamily = timerFontFamily;
+        TimeText.FontSize = timerFontSize;
+        TimeText.Foreground = new System.Windows.Media.SolidColorBrush(timerForegroundColor);
+
+        var brush = new System.Windows.Media.SolidColorBrush(timerBackgroundColor);
+        brush.Opacity = timerBackgroundOpacity;
+        RootGrid.Background = brush;
+    }
+
+    private void SaveSettingsToFile()
+    {
+        var settings = new AppSettings
+        {
+            TimerFontFamily = timerFontFamily.Source,
+            TimerFontSize = timerFontSize,
+            TimerForegroundColor = AppSettings.ColorToHex(timerForegroundColor),
+            TimerBackgroundColor = AppSettings.ColorToHex(timerBackgroundColor),
+            TimerBackgroundOpacity = timerBackgroundOpacity,
+
+            KeyFontFamily = keyFontFamily.Source,
+            KeyFontSize = keyFontSize,
+            KeyForegroundColor = AppSettings.ColorToHex(keyForegroundColor),
+            KeyShowSeconds = keyShowSeconds,
+            KeyFadeSeconds = keyFadeSeconds,
+            KeyChordHoldSeconds = keyChordHoldSeconds
+        };
+
+        settings.Save();
     }
 
     private IntPtr SetHook(LowLevelKeyboardProc proc)
@@ -329,13 +444,25 @@ public partial class MainWindow : Window
 
                     if (keysDown.Count == 0)
                     {
+                        // All keys released, unfreeze if frozen and start hide timer
+                        isChordFrozen = false;
+                        chordDisplayTimer.Stop();
                         keyHideTimer.Stop();
                         keyHideTimer.Interval = TimeSpan.FromSeconds(keyShowSeconds);
                         keyHideTimer.Start();
                     }
-                    else
+                    else if (!isChordFrozen)
                     {
-                        UpdateKeyDisplay();
+                        // Some keys still down but chord not yet frozen.
+                        // Capture current display and freeze it.
+                        frozenChordText = KeyText.Text;
+                        if (!string.IsNullOrEmpty(frozenChordText))
+                        {
+                            isChordFrozen = true;
+                            chordDisplayTimer.Stop();
+                            chordDisplayTimer.Interval = TimeSpan.FromSeconds(keyChordHoldSeconds);
+                            chordDisplayTimer.Start();
+                        }
                     }
                 }));
             }

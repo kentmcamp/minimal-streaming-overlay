@@ -36,23 +36,16 @@ public partial class EditWindow : Window
         BackgroundColorCombo.ItemsSource = colors;
         KeyFontColorCombo.ItemsSource = colors;
 
-        // initialize with current values from owner
-        FontFamilyCombo.SelectedItem = owner.TimeText.FontFamily;
-        FontSizeCombo.SelectedItem = owner.TimeText.FontSize;
+        // initialize with current values from owner using the new public properties
+        FontFamilyCombo.SelectedItem = owner.TimerFontFamily;
+        FontSizeCombo.SelectedItem = owner.TimerFontSize;
 
-        if (owner.TimeText.Foreground is SolidColorBrush fbrush)
-        {
-            var colorName = GetColorName(fbrush.Color);
-            FontColorCombo.SelectedItem = colorName;
-        }
+        var timerColorName = GetColorName(owner.TimerForegroundColor);
+        FontColorCombo.SelectedItem = timerColorName ?? "Lime";
 
-        if (owner.RootGrid.Background is SolidColorBrush bbrush)
-        {
-            var colorName = GetColorName(bbrush.Color);
-            BackgroundColorCombo.SelectedItem = colorName ?? "Black";
-            // Extract opacity from the color's alpha channel (0-255) and convert to 0-1
-            OpacitySlider.Value = bbrush.Color.A / 255.0;
-        }
+        var bgColorName = GetColorName(owner.TimerBackgroundColor);
+        BackgroundColorCombo.SelectedItem = bgColorName ?? "Black";
+        OpacitySlider.Value = owner.TimerBackgroundOpacity;
 
         OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
         OpacitySlider.ValueChanged += (s, e) => OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
@@ -66,6 +59,7 @@ public partial class EditWindow : Window
 
         KeyShowBox.Text = owner.KeyShowSeconds.ToString();
         KeyFadeBox.Text = owner.KeyFadeSeconds.ToString();
+        KeyChordHoldBox.Text = owner.KeyChordHoldSeconds.ToString();
     }
 
     private Color ParseColorFromName(string? name, Color fallback)
@@ -103,7 +97,6 @@ public partial class EditWindow : Window
                 return colorName;
         }
 
-        // Special case: #00FF00 (pure lime) is likely meant to be "Green" even though Colors.Green is #008000
         if (color.R == 0 && color.G == 255 && color.B == 0)
             return "Green";
 
@@ -130,8 +123,9 @@ public partial class EditWindow : Window
 
         if (!double.TryParse(KeyShowBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double showSec)) showSec = 1.2;
         if (!double.TryParse(KeyFadeBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double fadeSec)) fadeSec = 0.6;
+        if (!double.TryParse(KeyChordHoldBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double chordHoldSec)) chordHoldSec = 0.3;
 
-        ownerWindow.ApplyKeyDisplaySettings(keyFontFamily, keyFont, keyFgColor, showSec, fadeSec);
+        ownerWindow.ApplyKeyDisplaySettings(keyFontFamily, keyFont, keyFgColor, showSec, fadeSec, chordHoldSec);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

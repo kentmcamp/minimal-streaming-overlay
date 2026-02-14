@@ -50,7 +50,10 @@
                         <TextBox x:Name="KeyShowBox" Margin="0,0,0,10"/>
 
                         <TextBlock Text="Fade Duration (sec)" Margin="0,0,0,5"/>
-                        <TextBox x:Name="KeyFadeBox"/>
+                        <TextBox x:Name="KeyFadeBox" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Chord Hold Duration (sec)" Margin="0,0,0,5"/>
+                        <TextBox x:Name="KeyChordHoldBox"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
