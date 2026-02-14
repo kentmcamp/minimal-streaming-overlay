@@ -10,29 +10,28 @@
     <Grid Background="White">
         <StackPanel Margin="20" VerticalAlignment="Top">
 
-            <!-- Title -->
-            <TextBlock Text="minol"
-                       FontSize="26"
-                       FontWeight="Bold"
-                       Margin="0,0,0,2"/>
+            <!-- Title with Icon -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                <Image Source="pack://application:,,,/mIcon.ico" Width="48" Height="48" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="minol"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Margin="0,0,0,2"/>
 
-            <!-- Subtitle -->
-            <TextBlock Text="Minimal Streaming Overlay with Timer and Keyboard Inputs"
-                       FontSize="13"
-                       FontStyle="Italic"
-                       Foreground="Gray"
-                       Margin="0,0,0,15"/>
+                    <TextBlock Text="Minimal Streaming Overlay with Timer and Keyboard Inputs"
+                               FontSize="13"
+                               FontStyle="Italic"
+                               Foreground="Gray"
+                               Margin="0,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
 
             <!-- Version -->
             <TextBlock Text="Version 0.0.2 – Early Unreleased Build"
                        FontSize="12"
-                       Margin="0,0,0,5"/>
-
-            <!-- Description -->
-            <TextBlock Text="A streamlined overlay application designed for recording display inputs and session timers."
-                       TextWrapping="Wrap"
-                       FontSize="11"
                        Margin="0,0,0,15"/>
+
 
             <!-- Features -->
             <TextBlock Text="Features"
