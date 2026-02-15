@@ -6,10 +6,10 @@ namespace minol;
 public static class AppVersion
 {
     // Single-source version numbers
-    public const int Major = 0;
-    public const int Minor = 5;
-    public const int Patch = 0;
-    public const string PreReleaseLabel = "alpha";
+    public const int Major = 1;
+    public const int Minor = 0;
+    public const int Patch = 1;
+    public const string PreReleaseLabel = "beta";
 
 
     public static string VersionString =>

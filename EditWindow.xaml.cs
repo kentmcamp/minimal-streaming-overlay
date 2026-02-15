@@ -10,6 +10,7 @@ namespace minol;
 public partial class EditWindow : Window
 {
     private readonly MainWindow ownerWindow;
+    private string? currentlyLoadedThemeName;
 
     public EditWindow(MainWindow owner)
     {
@@ -102,14 +103,21 @@ public partial class EditWindow : Window
 
     private void UpdateCurrentThemeDisplay()
     {
-        var currentTheme = ThemeManager.GetDefaultTheme();
-        if (string.IsNullOrWhiteSpace(currentTheme))
+        if (!string.IsNullOrWhiteSpace(currentlyLoadedThemeName))
         {
-            CurrentThemeText.Text = "(default)";
+            CurrentThemeText.Text = currentlyLoadedThemeName;
         }
         else
         {
-            CurrentThemeText.Text = currentTheme;
+            var defaultTheme = ThemeManager.GetDefaultTheme();
+            if (string.IsNullOrWhiteSpace(defaultTheme))
+            {
+                CurrentThemeText.Text = "(default)";
+            }
+            else
+            {
+                CurrentThemeText.Text = defaultTheme;
+            }
         }
     }
 
@@ -238,6 +246,9 @@ public partial class EditWindow : Window
 
         // Apply window position with anchor
         ownerWindow.ApplyWindowPosition(settings.WindowAnchor, settings.WindowMarginLeft, settings.WindowMarginBottom);
+
+        // Update display to show which theme was applied
+        UpdateCurrentThemeDisplay();
     }
 
     private void SaveThemeButton_Click(object sender, RoutedEventArgs e)
@@ -260,18 +271,19 @@ public partial class EditWindow : Window
 
     private void SetAsDefaultTheme_Click(object sender, RoutedEventArgs e)
     {
-        var currentTheme = ThemeManager.GetDefaultTheme();
-        if (string.IsNullOrWhiteSpace(currentTheme))
+        if (string.IsNullOrWhiteSpace(currentlyLoadedThemeName))
         {
-            MessageBox.Show("No theme is currently set as default. Please save this configuration as a theme first, then set it as default.", "Set Default Theme", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Please load a theme first before setting it as default.", "Set Default Theme", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
         var settings = GetCurrentSettings();
-        ThemeManager.SaveTheme(currentTheme, settings);
+        ThemeManager.SaveTheme(currentlyLoadedThemeName, settings);
+        ThemeManager.SetDefaultTheme(currentlyLoadedThemeName);
+
         UpdateCurrentThemeDisplay();
 
-        MessageBox.Show($"Current configuration saved as default theme.", "Set Default Theme", MessageBoxButton.OK, MessageBoxImage.Information);
+        MessageBox.Show($"Theme '{currentlyLoadedThemeName}' set as default and will load on next startup.", "Set Default Theme", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void LoadSelectedTheme_Click(object sender, RoutedEventArgs e)
@@ -285,6 +297,9 @@ public partial class EditWindow : Window
     private void LoadThemeByName(string themeName)
     {
         var settings = ThemeManager.LoadTheme(themeName);
+
+        // Track the loaded theme name (but don't update display until Apply is clicked)
+        currentlyLoadedThemeName = themeName;
 
         // Update UI with loaded settings
         try
