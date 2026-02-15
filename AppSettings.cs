@@ -5,6 +5,14 @@ using System.Windows.Media;
 
 namespace minol;
 
+public enum WindowAnchor
+{
+    BottomLeft = 0,
+    BottomRight = 1,
+    TopLeft = 2,
+    TopRight = 3
+}
+
 public class AppSettings
 {
     // Timer display settings
@@ -21,6 +29,11 @@ public class AppSettings
     public double KeyShowSeconds { get; set; } = 1.2d;
     public double KeyFadeSeconds { get; set; } = 0.6d;
     public double KeyChordHoldSeconds { get; set; } = 0.3d;
+
+    // Window position and margin settings
+    public WindowAnchor WindowAnchor { get; set; } = WindowAnchor.BottomLeft;
+    public double WindowMarginLeft { get; set; } = 20d;
+    public double WindowMarginBottom { get; set; } = 40d;
 
     private static readonly string SettingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

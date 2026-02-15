@@ -47,6 +47,11 @@ public partial class MainWindow : Window
     private double keyFadeSeconds = 0.5d;
     private double keyChordHoldSeconds = 0.3d;
 
+    // Window position and margin settings
+    private WindowAnchor windowAnchor = WindowAnchor.BottomLeft;
+    private double windowMarginLeft = 20d;
+    private double windowMarginBottom = 40d;
+
     // Public properties to read config settings
     public System.Windows.Media.FontFamily TimerFontFamily => timerFontFamily;
     public double TimerFontSize => timerFontSize;
@@ -60,6 +65,10 @@ public partial class MainWindow : Window
     public double KeyShowSeconds => keyShowSeconds;
     public double KeyFadeSeconds => keyFadeSeconds;
     public double KeyChordHoldSeconds => keyChordHoldSeconds;
+
+    public WindowAnchor WindowAnchor => windowAnchor;
+    public double WindowMarginLeft => windowMarginLeft;
+    public double WindowMarginBottom => windowMarginBottom;
 
     public MainWindow()
     {
@@ -82,6 +91,7 @@ public partial class MainWindow : Window
 
         LoadSettingsIntoVariables(settings);
         ApplyUISettings();
+        PositionWindow();
 
         stopwatch.Start();
 
@@ -367,6 +377,17 @@ public partial class MainWindow : Window
         SaveSettingsToFile();
     }
 
+    public void ApplyWindowPosition(WindowAnchor anchor, double marginLeft, double marginBottom)
+    {
+        windowAnchor = anchor;
+        windowMarginLeft = marginLeft;
+        windowMarginBottom = marginBottom;
+        PositionWindow();
+
+        // Save to settings file
+        SaveSettingsToFile();
+    }
+
     private void LoadSettingsIntoVariables(AppSettings settings)
     {
         // Timer settings
@@ -383,6 +404,11 @@ public partial class MainWindow : Window
         keyShowSeconds = settings.KeyShowSeconds;
         keyFadeSeconds = settings.KeyFadeSeconds;
         keyChordHoldSeconds = settings.KeyChordHoldSeconds;
+
+        // Window position and margin settings
+        windowAnchor = settings.WindowAnchor;
+        windowMarginLeft = settings.WindowMarginLeft;
+        windowMarginBottom = settings.WindowMarginBottom;
     }
 
     private void ApplyUISettings()
@@ -412,10 +438,40 @@ public partial class MainWindow : Window
             KeyForegroundColor = AppSettings.ColorToHex(keyForegroundColor),
             KeyShowSeconds = keyShowSeconds,
             KeyFadeSeconds = keyFadeSeconds,
-            KeyChordHoldSeconds = keyChordHoldSeconds
+            KeyChordHoldSeconds = keyChordHoldSeconds,
+
+            WindowAnchor = windowAnchor,
+            WindowMarginLeft = windowMarginLeft,
+            WindowMarginBottom = windowMarginBottom
         };
 
         settings.Save();
+    }
+
+    private void PositionWindow()
+    {
+        var workingArea = System.Windows.SystemParameters.WorkArea;
+
+        // Position based on anchor corner
+        switch (windowAnchor)
+        {
+            case WindowAnchor.BottomLeft:
+                this.Left = workingArea.Left + windowMarginLeft;
+                this.Top = workingArea.Bottom - this.Height - windowMarginBottom;
+                break;
+            case WindowAnchor.BottomRight:
+                this.Left = workingArea.Right - this.Width - windowMarginLeft;
+                this.Top = workingArea.Bottom - this.Height - windowMarginBottom;
+                break;
+            case WindowAnchor.TopLeft:
+                this.Left = workingArea.Left + windowMarginLeft;
+                this.Top = workingArea.Top + windowMarginBottom;
+                break;
+            case WindowAnchor.TopRight:
+                this.Left = workingArea.Right - this.Width - windowMarginLeft;
+                this.Top = workingArea.Top + windowMarginBottom;
+                break;
+        }
     }
 
     private IntPtr SetHook(LowLevelKeyboardProc proc)

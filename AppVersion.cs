@@ -9,8 +9,6 @@ public static class AppVersion
     public const int Major = 0;
     public const int Minor = 5;
     public const int Patch = 0;
-
-    // Optional prerelease label (e.g. "alpha", "beta", "rc.1"). Empty = none.
     public const string PreReleaseLabel = "alpha";
 
 

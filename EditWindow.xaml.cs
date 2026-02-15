@@ -35,7 +35,6 @@ public partial class EditWindow : Window
         // Initialize with current values
         InitializeSettingsFromOwner();
         RefreshThemesList();
-        CheckDefaultTheme();
 
         // Opacity value display
         OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
@@ -58,24 +57,83 @@ public partial class EditWindow : Window
         KeyShowBox.Text = ownerWindow.KeyShowSeconds.ToString();
         KeyFadeBox.Text = ownerWindow.KeyFadeSeconds.ToString();
         KeyChordHoldBox.Text = ownerWindow.KeyChordHoldSeconds.ToString();
+
+        // Window position settings - position anchor
+        var anchors = new[] { "Bottom-Left", "Bottom-Right", "Top-Left", "Top-Right" };
+        WindowAnchorCombo.ItemsSource = anchors;
+        WindowAnchorCombo.SelectedItem = GetAnchorDisplayText(ownerWindow.WindowAnchor);
+        WindowAnchorCombo.SelectionChanged += (s, e) => UpdatePositionPreview();
+
+        // Margins
+        WindowMarginLeftBox.Text = ownerWindow.WindowMarginLeft.ToString();
+        WindowMarginBottomBox.Text = ownerWindow.WindowMarginBottom.ToString();
+        UpdatePositionPreview();
+
+        // Event handlers for position preview
+        WindowMarginLeftBox.TextChanged += (s, e) => UpdatePositionPreview();
+        WindowMarginBottomBox.TextChanged += (s, e) => UpdatePositionPreview();
+
+        // Update current theme display
+        UpdateCurrentThemeDisplay();
+    }
+
+    private string GetAnchorDisplayText(WindowAnchor anchor)
+    {
+        return anchor switch
+        {
+            WindowAnchor.BottomLeft => "Bottom-Left",
+            WindowAnchor.BottomRight => "Bottom-Right",
+            WindowAnchor.TopLeft => "Top-Left",
+            WindowAnchor.TopRight => "Top-Right",
+            _ => "Bottom-Left"
+        };
+    }
+
+    private WindowAnchor GetAnchorFromDisplayText(string? text)
+    {
+        return text switch
+        {
+            "Bottom-Right" => WindowAnchor.BottomRight,
+            "Top-Left" => WindowAnchor.TopLeft,
+            "Top-Right" => WindowAnchor.TopRight,
+            _ => WindowAnchor.BottomLeft
+        };
+    }
+
+    private void UpdateCurrentThemeDisplay()
+    {
+        var currentTheme = ThemeManager.GetDefaultTheme();
+        if (string.IsNullOrWhiteSpace(currentTheme))
+        {
+            CurrentThemeText.Text = "(default)";
+        }
+        else
+        {
+            CurrentThemeText.Text = currentTheme;
+        }
+    }
+
+    private void UpdatePositionPreview()
+    {
+        var anchor = GetAnchorFromDisplayText(WindowAnchorCombo.SelectedItem as string);
+        if (double.TryParse(WindowMarginLeftBox.Text, out var left) && double.TryParse(WindowMarginBottomBox.Text, out var bottom))
+        {
+            string description = anchor switch
+            {
+                WindowAnchor.BottomLeft => $"Bottom-Left corner: {left}px from left, {bottom}px from bottom",
+                WindowAnchor.BottomRight => $"Bottom-Right corner: {left}px from right, {bottom}px from bottom",
+                WindowAnchor.TopLeft => $"Top-Left corner: {left}px from left, {bottom}px from top",
+                WindowAnchor.TopRight => $"Top-Right corner: {left}px from right, {bottom}px from top",
+                _ => "Position: Unknown"
+            };
+            PositionPreviewText.Text = description;
+        }
     }
 
     private void RefreshThemesList()
     {
         var themes = ThemeManager.GetAvailableThemes();
         ThemesListBox.ItemsSource = themes;
-        ThemeCombo.ItemsSource = themes;
-
-        if (themes.Count > 0)
-        {
-            ThemeCombo.SelectedIndex = 0;
-        }
-    }
-
-    private void CheckDefaultTheme()
-    {
-        var defaultTheme = ThemeManager.GetDefaultTheme();
-        SetDefaultCheckBox.IsChecked = !string.IsNullOrWhiteSpace(defaultTheme);
     }
 
     private Color ParseColorFromName(string? name, Color fallback)
@@ -132,6 +190,11 @@ public partial class EditWindow : Window
         if (!double.TryParse(KeyFadeBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double fadeSec)) fadeSec = 0.6;
         if (!double.TryParse(KeyChordHoldBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double chordHoldSec)) chordHoldSec = 0.3;
 
+        if (!double.TryParse(WindowMarginLeftBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double marginLeft)) marginLeft = 20d;
+        if (!double.TryParse(WindowMarginBottomBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double marginBottom)) marginBottom = 40d;
+
+        var anchor = GetAnchorFromDisplayText(WindowAnchorCombo.SelectedItem as string);
+
         return new AppSettings
         {
             TimerFontFamily = ff.Source,
@@ -144,7 +207,10 @@ public partial class EditWindow : Window
             KeyForegroundColor = AppSettings.ColorToHex(keyFgColor),
             KeyShowSeconds = showSec,
             KeyFadeSeconds = fadeSec,
-            KeyChordHoldSeconds = chordHoldSec
+            KeyChordHoldSeconds = chordHoldSec,
+            WindowMarginLeft = marginLeft,
+            WindowMarginBottom = marginBottom,
+            WindowAnchor = anchor
         };
     }
 
@@ -170,12 +236,8 @@ public partial class EditWindow : Window
         }
         catch { }
 
-        if (SetDefaultCheckBox.IsChecked == true)
-        {
-            // Theme name comes from ComboBox or "Current" if creating new
-            var themeName = ThemeCombo.SelectedItem as string ?? "Default";
-            ThemeManager.SetDefaultTheme(themeName);
-        }
+        // Apply window position with anchor
+        ownerWindow.ApplyWindowPosition(settings.WindowAnchor, settings.WindowMarginLeft, settings.WindowMarginBottom);
     }
 
     private void SaveThemeButton_Click(object sender, RoutedEventArgs e)
@@ -196,12 +258,20 @@ public partial class EditWindow : Window
         RefreshThemesList();
     }
 
-    private void LoadTheme_Click(object sender, RoutedEventArgs e)
+    private void SetAsDefaultTheme_Click(object sender, RoutedEventArgs e)
     {
-        if (ThemeCombo.SelectedItem is string themeName)
+        var currentTheme = ThemeManager.GetDefaultTheme();
+        if (string.IsNullOrWhiteSpace(currentTheme))
         {
-            LoadThemeByName(themeName);
+            MessageBox.Show("No theme is currently set as default. Please save this configuration as a theme first, then set it as default.", "Set Default Theme", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
         }
+
+        var settings = GetCurrentSettings();
+        ThemeManager.SaveTheme(currentTheme, settings);
+        UpdateCurrentThemeDisplay();
+
+        MessageBox.Show($"Current configuration saved as default theme.", "Set Default Theme", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void LoadSelectedTheme_Click(object sender, RoutedEventArgs e)
@@ -242,20 +312,13 @@ public partial class EditWindow : Window
         KeyFadeBox.Text = settings.KeyFadeSeconds.ToString();
         KeyChordHoldBox.Text = settings.KeyChordHoldSeconds.ToString();
 
-        MessageBox.Show($"Theme '{themeName}' loaded. Click 'Apply' to apply changes.", "Theme Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
-    }
+        // Load window position settings
+        WindowAnchorCombo.SelectedItem = GetAnchorDisplayText(settings.WindowAnchor);
+        WindowMarginLeftBox.Text = settings.WindowMarginLeft.ToString();
+        WindowMarginBottomBox.Text = settings.WindowMarginBottom.ToString();
+        UpdatePositionPreview();
 
-    private void DeleteTheme_Click(object sender, RoutedEventArgs e)
-    {
-        if (ThemeCombo.SelectedItem is string themeName)
-        {
-            if (MessageBox.Show($"Delete theme '{themeName}'?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-            {
-                ThemeManager.DeleteTheme(themeName);
-                RefreshThemesList();
-                MessageBox.Show($"Theme '{themeName}' deleted.", "Deleted", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
+        MessageBox.Show($"Theme '{themeName}' loaded. Click 'Apply' to apply changes.", "Theme Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void DeleteSelectedTheme_Click(object sender, RoutedEventArgs e)
@@ -268,12 +331,6 @@ public partial class EditWindow : Window
                 RefreshThemesList();
             }
         }
-    }
-
-    private void SaveTheme_Click(object sender, RoutedEventArgs e)
-    {
-        // This is for the top button bar - same as SaveThemeButton_Click
-        SaveThemeButton_Click(sender, e);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

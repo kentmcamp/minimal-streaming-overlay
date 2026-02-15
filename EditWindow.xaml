@@ -3,15 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Settings and Themes" Height="700" Width="500" WindowStartupLocation="CenterOwner" ResizeMode="CanResize">
     <DockPanel>
-        <!-- Top button bar for theme management -->
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10,10,10,10" Background="Transparent">
-            <TextBlock Text="Theme:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="Bold"/>
-            <ComboBox x:Name="ThemeCombo" Width="150" Margin="0,0,8,0"/>
-            <Button x:Name="LoadThemeButton" Content="Load" Width="60" Margin="0,0,4,0" Click="LoadTheme_Click"/>
-            <Button x:Name="SaveThemeButton" Content="Save As" Width="70" Margin="0,0,4,0" Click="SaveTheme_Click"/>
-            <Button x:Name="DeleteThemeButton" Content="Delete" Width="70" Margin="0,0,4,0" Click="DeleteTheme_Click"/>
-        </StackPanel>
-
         <!-- Bottom button bar -->
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,10,10,10">
             <Button Content="About" Width="70" Margin="0,0,8,0" Click="About_Click"/>
@@ -71,16 +62,42 @@
                 </ScrollViewer>
             </TabItem>
 
+            <!-- Window Position Tab -->
+            <TabItem Header="Window Position" Padding="10,5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
+                    <StackPanel>
+                        <TextBlock Text="Overlay Position" Margin="0,0,0,10" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="Choose where to position the overlay on your screen." Margin="0,0,0,15" TextWrapping="Wrap" Foreground="Gray"/>
+
+                        <TextBlock Text="Corner Position" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <ComboBox x:Name="WindowAnchorCombo" Margin="0,0,0,15" Padding="8"/>
+
+                        <TextBlock Text="Left/Right Margin (px)" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <TextBlock Text="Distance from left or right edge (depends on corner)" Margin="0,0,0,5" FontSize="10" Foreground="Gray"/>
+                        <TextBox x:Name="WindowMarginLeftBox" Margin="0,0,0,15" Padding="8"/>
+
+                        <TextBlock Text="Top/Bottom Margin (px)" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <TextBlock Text="Distance from top or bottom edge (depends on corner)" Margin="0,0,0,5" FontSize="10" Foreground="Gray"/>
+                        <TextBox x:Name="WindowMarginBottomBox" Margin="0,0,0,15" Padding="8"/>
+
+                        <TextBlock Text="Preview" Margin="0,0,0,10" FontWeight="Bold" FontSize="12" Foreground="Gray"/>
+                        <TextBlock x:Name="PositionPreviewText" Margin="0,0,0,0" TextWrapping="Wrap" FontSize="11" Foreground="#666"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
             <!-- Theme Management Tab -->
             <TabItem Header="Themes" Padding="10,5">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
                     <StackPanel>
-                        <TextBlock Text="Default Theme" Margin="0,0,0,10" FontWeight="Bold" FontSize="14"/>
-                        <TextBlock Text="Set the current configuration as the default theme that loads on startup." Margin="0,0,0,10" TextWrapping="Wrap" Foreground="Gray"/>
+                        <TextBlock Text="Current Theme" Margin="0,0,0,5" FontWeight="Bold" FontSize="14"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <TextBlock x:Name="CurrentThemeText" Text="(default)" Margin="0,0,0,0" FontSize="12"/>
+                        </StackPanel>
 
-                        <CheckBox x:Name="SetDefaultCheckBox" Margin="0,0,0,20">
-                            <TextBlock Text="Make current configuration the default"/>
-                        </CheckBox>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <Button Content="Set as Default" Width="120" Click="SetAsDefaultTheme_Click"/>
+                        </StackPanel>
 
                         <Separator Margin="0,0,0,20"/>
 
