@@ -45,7 +45,7 @@ public partial class MainWindow : Window
     private System.Windows.Media.Color keyForegroundColor = System.Windows.Media.Colors.Lime;
     private double keyShowSeconds = 2d;
     private double keyFadeSeconds = 0.5d;
-    private double keyChordHoldSeconds = 0.3d;  // Time to hold chord after partial release
+    private double keyChordHoldSeconds = 0.3d;
 
     // Public properties to read config settings
     public System.Windows.Media.FontFamily TimerFontFamily => timerFontFamily;
@@ -65,8 +65,21 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        // Load settings from file
-        var settings = AppSettings.Load();
+        // Load theme system - check for default theme first
+        var defaultThemeName = ThemeManager.GetDefaultTheme();
+        AppSettings settings;
+
+        if (!string.IsNullOrWhiteSpace(defaultThemeName))
+        {
+            // Load default theme
+            settings = ThemeManager.LoadTheme(defaultThemeName);
+        }
+        else
+        {
+            // Load regular settings
+            settings = AppSettings.Load();
+        }
+
         LoadSettingsIntoVariables(settings);
         ApplyUISettings();
 

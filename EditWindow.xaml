@@ -1,62 +1,111 @@
 <Window x:Class="minol.EditWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Edit Overlay" Height="500" Width="360" WindowStartupLocation="CenterOwner" ResizeMode="CanResize">
+        Title="Settings and Themes" Height="700" Width="500" WindowStartupLocation="CenterOwner" ResizeMode="CanResize">
     <DockPanel>
+        <!-- Top button bar for theme management -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10,10,10,10" Background="Transparent">
+            <TextBlock Text="Theme:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="Bold"/>
+            <ComboBox x:Name="ThemeCombo" Width="150" Margin="0,0,8,0"/>
+            <Button x:Name="LoadThemeButton" Content="Load" Width="60" Margin="0,0,4,0" Click="LoadTheme_Click"/>
+            <Button x:Name="SaveThemeButton" Content="Save As" Width="70" Margin="0,0,4,0" Click="SaveTheme_Click"/>
+            <Button x:Name="DeleteThemeButton" Content="Delete" Width="70" Margin="0,0,4,0" Click="DeleteTheme_Click"/>
+        </StackPanel>
+
+        <!-- Bottom button bar -->
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,10,10,10">
             <Button Content="About" Width="70" Margin="0,0,8,0" Click="About_Click"/>
-            <Button x:Name="ApplyButton" Content="Save" Width="70" Margin="0,0,8,0" Click="ApplyButton_Click"/>
+            <Button x:Name="ApplyButton" Content="Apply" Width="70" Margin="0,0,8,0" Click="ApplyButton_Click"/>
             <Button Content="Close" Width="70" Click="CloseButton_Click"/>
         </StackPanel>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
-            <StackPanel>
-                <!-- Timer Display Section -->
-                <GroupBox Header="Timer Display" Padding="10" Margin="0,0,0,10">
+        <!-- Main content with TabControl -->
+        <TabControl>
+            <!-- Display Settings Tab -->
+            <TabItem Header="Timer Display" Padding="10,5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
                     <StackPanel>
-                        <TextBlock Text="Font Family" Margin="0,0,0,5"/>
-                        <ComboBox x:Name="FontFamilyCombo" Margin="0,0,0,10"/>
+                        <TextBlock Text="Font Family" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <ComboBox x:Name="FontFamilyCombo" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Font Size" Margin="0,0,0,5"/>
-                        <ComboBox x:Name="FontSizeCombo" Margin="0,0,0,10"/>
+                        <TextBlock Text="Font Size (px)" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <ComboBox x:Name="FontSizeCombo" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Font Color" Margin="0,0,0,5"/>
-                        <ComboBox x:Name="FontColorCombo" Margin="0,0,0,10"/>
+                        <TextBlock Text="Font Color" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <ComboBox x:Name="FontColorCombo" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Background Color" Margin="0,0,0,5"/>
-                        <ComboBox x:Name="BackgroundColorCombo" Margin="0,0,0,10"/>
+                        <TextBlock Text="Background Color" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <ComboBox x:Name="BackgroundColorCombo" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Background Opacity" Margin="0,0,0,5"/>
-                        <StackPanel Orientation="Horizontal">
-                            <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Value="0.5" Width="140" TickFrequency="0.05" IsSnapToTickEnabled="False"/>
-                            <TextBlock x:Name="OpacityValue" Margin="8,0,0,0" VerticalAlignment="Center" Width="40"/>
+                        <TextBlock Text="Background Opacity" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Value="0.5" Width="200" TickFrequency="0.05" IsSnapToTickEnabled="False"/>
+                            <TextBlock x:Name="OpacityValue" Margin="12,0,0,0" VerticalAlignment="Center" Width="40"/>
                         </StackPanel>
                     </StackPanel>
-                </GroupBox>
+                </ScrollViewer>
+            </TabItem>
 
-                <!-- Key Input Display Section -->
-                <GroupBox Header="Key Input Display" Padding="10" Margin="0,0,0,10">
+            <!-- Key Input Tab -->
+            <TabItem Header="Key Input" Padding="10,5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
                     <StackPanel>
-                        <TextBlock Text="Font Family" Margin="0,0,0,5"/>
-                        <ComboBox x:Name="KeyFontFamilyCombo" Margin="0,0,0,10"/>
+                        <TextBlock Text="Font Family" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <ComboBox x:Name="KeyFontFamilyCombo" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Font Size" Margin="0,0,0,5"/>
-                        <ComboBox x:Name="KeyFontSizeCombo" Margin="0,0,0,10"/>
+                        <TextBlock Text="Font Size (px)" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <ComboBox x:Name="KeyFontSizeCombo" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Font Color" Margin="0,0,0,5"/>
-                        <ComboBox x:Name="KeyFontColorCombo" Margin="0,0,0,10"/>
+                        <TextBlock Text="Font Color" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <ComboBox x:Name="KeyFontColorCombo" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Show Duration (sec)" Margin="0,0,0,5"/>
-                        <TextBox x:Name="KeyShowBox" Margin="0,0,0,10"/>
+                        <TextBlock Text="Show Duration (sec)" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <TextBox x:Name="KeyShowBox" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Fade Duration (sec)" Margin="0,0,0,5"/>
-                        <TextBox x:Name="KeyFadeBox" Margin="0,0,0,10"/>
+                        <TextBlock Text="Fade Duration (sec)" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <TextBox x:Name="KeyFadeBox" Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Chord Hold Duration (sec)" Margin="0,0,0,5"/>
-                        <TextBox x:Name="KeyChordHoldBox"/>
+                        <TextBlock Text="Chord Hold Duration (sec)" Margin="0,0,0,5" FontWeight="Bold"/>
+                        <TextBox x:Name="KeyChordHoldBox" Margin="0,0,0,15"/>
                     </StackPanel>
-                </GroupBox>
-            </StackPanel>
-        </ScrollViewer>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Theme Management Tab -->
+            <TabItem Header="Themes" Padding="10,5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
+                    <StackPanel>
+                        <TextBlock Text="Default Theme" Margin="0,0,0,10" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="Set the current configuration as the default theme that loads on startup." Margin="0,0,0,10" TextWrapping="Wrap" Foreground="Gray"/>
+
+                        <CheckBox x:Name="SetDefaultCheckBox" Margin="0,0,0,20">
+                            <TextBlock Text="Make current configuration the default"/>
+                        </CheckBox>
+
+                        <Separator Margin="0,0,0,20"/>
+
+                        <TextBlock Text="Save Current Configuration" Margin="0,0,0,10" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="Save your current settings as a new theme." Margin="0,0,0,10" TextWrapping="Wrap" Foreground="Gray"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <TextBox x:Name="NewThemeNameBox" Width="200" Margin="0,0,8,0" Padding="8" Text="My Theme"/>
+                            <Button Content="Save Theme" Width="90" Click="SaveThemeButton_Click"/>
+                        </StackPanel>
+
+                        <Separator Margin="0,0,0,20"/>
+
+                        <TextBlock Text="Available Themes" Margin="0,0,0,10" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="Select a theme to load." Margin="0,0,0,10" TextWrapping="Wrap" Foreground="Gray"/>
+
+                        <ListBox x:Name="ThemesListBox" Height="200" Margin="0,0,0,10"/>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Load Selected Theme" Width="150" Margin="0,0,8,0" Click="LoadSelectedTheme_Click"/>
+                            <Button Content="Delete Selected" Width="120" Click="DeleteSelectedTheme_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
     </DockPanel>
 </Window>

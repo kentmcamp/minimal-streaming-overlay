@@ -19,16 +19,12 @@ public partial class EditWindow : Window
         // Populate font families
         var families = Fonts.SystemFontFamilies.OrderBy(f => f.Source).ToList();
         FontFamilyCombo.ItemsSource = families;
+        KeyFontFamilyCombo.ItemsSource = families;
 
         // Populate font sizes
         double[] sizes = new double[] { 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 72 };
         FontSizeCombo.ItemsSource = sizes;
-
-        // Key font sizes
         KeyFontSizeCombo.ItemsSource = sizes;
-
-        // Key font families
-        KeyFontFamilyCombo.ItemsSource = families;
 
         // Colors list
         string[] colors = new string[] { "White", "Black", "Red", "Green", "Blue", "Yellow", "Gray", "Orange", "Purple", "Pink", "Teal", "LightGray", "DarkGray", "DarkBlue", "DarkMagenta" };
@@ -36,30 +32,50 @@ public partial class EditWindow : Window
         BackgroundColorCombo.ItemsSource = colors;
         KeyFontColorCombo.ItemsSource = colors;
 
-        // initialize with current values from owner using the new public properties
-        FontFamilyCombo.SelectedItem = owner.TimerFontFamily;
-        FontSizeCombo.SelectedItem = owner.TimerFontSize;
+        // Initialize with current values
+        InitializeSettingsFromOwner();
+        RefreshThemesList();
+        CheckDefaultTheme();
 
-        var timerColorName = GetColorName(owner.TimerForegroundColor);
-        FontColorCombo.SelectedItem = timerColorName ?? "Lime";
-
-        var bgColorName = GetColorName(owner.TimerBackgroundColor);
-        BackgroundColorCombo.SelectedItem = bgColorName ?? "Black";
-        OpacitySlider.Value = owner.TimerBackgroundOpacity;
-
+        // Opacity value display
         OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
         OpacitySlider.ValueChanged += (s, e) => OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
+    }
 
-        // Key display defaults - read from owner's current settings
-        KeyFontSizeCombo.SelectedItem = owner.KeyFontSize;
-        KeyFontFamilyCombo.SelectedItem = owner.KeyFontFamily;
+    private void InitializeSettingsFromOwner()
+    {
+        // Timer settings
+        FontFamilyCombo.SelectedItem = ownerWindow.TimerFontFamily;
+        FontSizeCombo.SelectedItem = ownerWindow.TimerFontSize;
+        FontColorCombo.SelectedItem = GetColorName(ownerWindow.TimerForegroundColor) ?? "Lime";
+        BackgroundColorCombo.SelectedItem = GetColorName(ownerWindow.TimerBackgroundColor) ?? "Black";
+        OpacitySlider.Value = ownerWindow.TimerBackgroundOpacity;
 
-        var keyColorName = GetColorName(owner.KeyForegroundColor) ?? "White";
-        KeyFontColorCombo.SelectedItem = keyColorName;
+        // Key settings
+        KeyFontSizeCombo.SelectedItem = ownerWindow.KeyFontSize;
+        KeyFontFamilyCombo.SelectedItem = ownerWindow.KeyFontFamily;
+        KeyFontColorCombo.SelectedItem = GetColorName(ownerWindow.KeyForegroundColor) ?? "Lime";
+        KeyShowBox.Text = ownerWindow.KeyShowSeconds.ToString();
+        KeyFadeBox.Text = ownerWindow.KeyFadeSeconds.ToString();
+        KeyChordHoldBox.Text = ownerWindow.KeyChordHoldSeconds.ToString();
+    }
 
-        KeyShowBox.Text = owner.KeyShowSeconds.ToString();
-        KeyFadeBox.Text = owner.KeyFadeSeconds.ToString();
-        KeyChordHoldBox.Text = owner.KeyChordHoldSeconds.ToString();
+    private void RefreshThemesList()
+    {
+        var themes = ThemeManager.GetAvailableThemes();
+        ThemesListBox.ItemsSource = themes;
+        ThemeCombo.ItemsSource = themes;
+
+        if (themes.Count > 0)
+        {
+            ThemeCombo.SelectedIndex = 0;
+        }
+    }
+
+    private void CheckDefaultTheme()
+    {
+        var defaultTheme = ThemeManager.GetDefaultTheme();
+        SetDefaultCheckBox.IsChecked = !string.IsNullOrWhiteSpace(defaultTheme);
     }
 
     private Color ParseColorFromName(string? name, Color fallback)
@@ -67,16 +83,13 @@ public partial class EditWindow : Window
         if (string.IsNullOrWhiteSpace(name)) return fallback;
         try
         {
-            // Special case: "Green" should map to Lime for consistency with the visual appearance
             if (name == "Green")
                 return Colors.Lime;
 
-            // If it's a named color
             var prop = typeof(Colors).GetProperty(name);
             if (prop != null)
                 return (Color)prop.GetValue(null);
 
-            // Try converter (e.g., #FF0000)
             var conv = (Color)ColorConverter.ConvertFromString(name);
             return conv;
         }
@@ -85,14 +98,11 @@ public partial class EditWindow : Window
 
     private string? GetColorName(Color color)
     {
-        // Map color to the available colors in the dropdown
         string[] availableColors = new string[] { "White", "Black", "Red", "Green", "Blue", "Yellow", "Gray", "Orange", "Purple", "Pink", "Teal", "LightGray", "DarkGray", "DarkBlue", "DarkMagenta" };
 
         foreach (var colorName in availableColors)
         {
             var namedColor = ParseColorFromName(colorName, Colors.Black);
-
-            // Exact match
             if (namedColor.R == color.R && namedColor.G == color.G && namedColor.B == color.B)
                 return colorName;
         }
@@ -103,29 +113,167 @@ public partial class EditWindow : Window
         return null;
     }
 
-    private void ApplyButton_Click(object sender, RoutedEventArgs e)
+    private AppSettings GetCurrentSettings()
     {
-        var ff = FontFamilyCombo.SelectedItem as FontFamily ?? ownerWindow.TimeText.FontFamily;
-        var size = FontSizeCombo.SelectedItem is double d ? d : ownerWindow.TimeText.FontSize;
-        var fgName = FontColorCombo.SelectedItem as string ?? "White";
-        var bgName = BackgroundColorCombo.SelectedItem as string ?? "#80000000";
-        var fgColor = ParseColorFromName(fgName, Colors.White);
+        var ff = FontFamilyCombo.SelectedItem as FontFamily ?? ownerWindow.TimerFontFamily;
+        var size = FontSizeCombo.SelectedItem is double d ? d : ownerWindow.TimerFontSize;
+        var fgName = FontColorCombo.SelectedItem as string ?? "Lime";
+        var bgName = BackgroundColorCombo.SelectedItem as string ?? "Black";
+        var fgColor = ParseColorFromName(fgName, Colors.Lime);
         var bgColor = ParseColorFromName(bgName, Colors.Black);
         var opacity = OpacitySlider.Value;
 
-        ownerWindow.ApplyOverlaySettings(ff, size, fgColor, bgColor, opacity);
-
-        // apply key display settings
-        var keyFontFamily = KeyFontFamilyCombo.SelectedItem as FontFamily ?? ownerWindow.KeyText.FontFamily;
-        double keyFont = KeyFontSizeCombo.SelectedItem is double kd ? kd : ownerWindow.KeyText.FontSize;
-        var keyFgName = KeyFontColorCombo.SelectedItem as string ?? "White";
-        var keyFgColor = ParseColorFromName(keyFgName, Colors.White);
+        var keyFontFamily = KeyFontFamilyCombo.SelectedItem as FontFamily ?? ownerWindow.KeyFontFamily;
+        double keyFont = KeyFontSizeCombo.SelectedItem is double kd ? kd : ownerWindow.KeyFontSize;
+        var keyFgName = KeyFontColorCombo.SelectedItem as string ?? "Lime";
+        var keyFgColor = ParseColorFromName(keyFgName, Colors.Lime);
 
         if (!double.TryParse(KeyShowBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double showSec)) showSec = 1.2;
         if (!double.TryParse(KeyFadeBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double fadeSec)) fadeSec = 0.6;
         if (!double.TryParse(KeyChordHoldBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double chordHoldSec)) chordHoldSec = 0.3;
 
-        ownerWindow.ApplyKeyDisplaySettings(keyFontFamily, keyFont, keyFgColor, showSec, fadeSec, chordHoldSec);
+        return new AppSettings
+        {
+            TimerFontFamily = ff.Source,
+            TimerFontSize = size,
+            TimerForegroundColor = AppSettings.ColorToHex(fgColor),
+            TimerBackgroundColor = AppSettings.ColorToHex(bgColor),
+            TimerBackgroundOpacity = opacity,
+            KeyFontFamily = keyFontFamily.Source,
+            KeyFontSize = keyFont,
+            KeyForegroundColor = AppSettings.ColorToHex(keyFgColor),
+            KeyShowSeconds = showSec,
+            KeyFadeSeconds = fadeSec,
+            KeyChordHoldSeconds = chordHoldSec
+        };
+    }
+
+    private void ApplyButton_Click(object sender, RoutedEventArgs e)
+    {
+        var settings = GetCurrentSettings();
+
+        var fgColor = AppSettings.ParseColor(settings.TimerForegroundColor);
+        var bgColor = AppSettings.ParseColor(settings.TimerBackgroundColor);
+        var keyFgColor = AppSettings.ParseColor(settings.KeyForegroundColor);
+
+        try
+        {
+            var ff = new FontFamily(settings.TimerFontFamily);
+            ownerWindow.ApplyOverlaySettings(ff, settings.TimerFontSize, fgColor, bgColor, settings.TimerBackgroundOpacity);
+        }
+        catch { }
+
+        try
+        {
+            var keyFf = new FontFamily(settings.KeyFontFamily);
+            ownerWindow.ApplyKeyDisplaySettings(keyFf, settings.KeyFontSize, keyFgColor, settings.KeyShowSeconds, settings.KeyFadeSeconds, settings.KeyChordHoldSeconds);
+        }
+        catch { }
+
+        if (SetDefaultCheckBox.IsChecked == true)
+        {
+            // Theme name comes from ComboBox or "Current" if creating new
+            var themeName = ThemeCombo.SelectedItem as string ?? "Default";
+            ThemeManager.SetDefaultTheme(themeName);
+        }
+    }
+
+    private void SaveThemeButton_Click(object sender, RoutedEventArgs e)
+    {
+        var themeName = NewThemeNameBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(themeName))
+        {
+            MessageBox.Show("Please enter a theme name.", "Save Theme", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        var settings = GetCurrentSettings();
+        ThemeManager.SaveTheme(themeName, settings);
+
+        MessageBox.Show($"Theme '{themeName}' saved successfully.", "Save Theme", MessageBoxButton.OK, MessageBoxImage.Information);
+
+        NewThemeNameBox.Text = "My Theme";
+        RefreshThemesList();
+    }
+
+    private void LoadTheme_Click(object sender, RoutedEventArgs e)
+    {
+        if (ThemeCombo.SelectedItem is string themeName)
+        {
+            LoadThemeByName(themeName);
+        }
+    }
+
+    private void LoadSelectedTheme_Click(object sender, RoutedEventArgs e)
+    {
+        if (ThemesListBox.SelectedItem is string themeName)
+        {
+            LoadThemeByName(themeName);
+        }
+    }
+
+    private void LoadThemeByName(string themeName)
+    {
+        var settings = ThemeManager.LoadTheme(themeName);
+
+        // Update UI with loaded settings
+        try
+        {
+            var ff = new FontFamily(settings.TimerFontFamily);
+            FontFamilyCombo.SelectedItem = ff;
+        }
+        catch { }
+
+        FontSizeCombo.SelectedItem = settings.TimerFontSize;
+        FontColorCombo.SelectedItem = GetColorName(AppSettings.ParseColor(settings.TimerForegroundColor)) ?? "Lime";
+        BackgroundColorCombo.SelectedItem = GetColorName(AppSettings.ParseColor(settings.TimerBackgroundColor)) ?? "Black";
+        OpacitySlider.Value = settings.TimerBackgroundOpacity;
+
+        try
+        {
+            var keyFf = new FontFamily(settings.KeyFontFamily);
+            KeyFontFamilyCombo.SelectedItem = keyFf;
+        }
+        catch { }
+
+        KeyFontSizeCombo.SelectedItem = settings.KeyFontSize;
+        KeyFontColorCombo.SelectedItem = GetColorName(AppSettings.ParseColor(settings.KeyForegroundColor)) ?? "Lime";
+        KeyShowBox.Text = settings.KeyShowSeconds.ToString();
+        KeyFadeBox.Text = settings.KeyFadeSeconds.ToString();
+        KeyChordHoldBox.Text = settings.KeyChordHoldSeconds.ToString();
+
+        MessageBox.Show($"Theme '{themeName}' loaded. Click 'Apply' to apply changes.", "Theme Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private void DeleteTheme_Click(object sender, RoutedEventArgs e)
+    {
+        if (ThemeCombo.SelectedItem is string themeName)
+        {
+            if (MessageBox.Show($"Delete theme '{themeName}'?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                ThemeManager.DeleteTheme(themeName);
+                RefreshThemesList();
+                MessageBox.Show($"Theme '{themeName}' deleted.", "Deleted", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+    }
+
+    private void DeleteSelectedTheme_Click(object sender, RoutedEventArgs e)
+    {
+        if (ThemesListBox.SelectedItem is string themeName)
+        {
+            if (MessageBox.Show($"Delete theme '{themeName}'?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                ThemeManager.DeleteTheme(themeName);
+                RefreshThemesList();
+            }
+        }
+    }
+
+    private void SaveTheme_Click(object sender, RoutedEventArgs e)
+    {
+        // This is for the top button bar - same as SaveThemeButton_Click
+        SaveThemeButton_Click(sender, e);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
