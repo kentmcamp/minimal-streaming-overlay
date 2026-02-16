@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Threading;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Runtime.InteropServices;
 using System.Drawing;
@@ -180,44 +181,87 @@ public partial class MainWindow : Window
     }
 
     private void UpdateKeyDisplay()
+{
+    var parts = new List<string>();
+
+    // Add modifiers from keysDown directly
+    if (keysDown.Contains(Key.LeftCtrl) || keysDown.Contains(Key.RightCtrl))
+        parts.Add("Ctrl");
+
+    if (keysDown.Contains(Key.LeftAlt) || keysDown.Contains(Key.RightAlt))
+        parts.Add("Alt");
+
+    if (keysDown.Contains(Key.LeftShift) || keysDown.Contains(Key.RightShift))
+        parts.Add("Shift");
+
+    if (keysDown.Contains(Key.LWin) || keysDown.Contains(Key.RWin))
+        parts.Add("Win");
+
+    // Add non-modifier keys
+    var mainKeys = keysDown
+        .Where(k => !IsModifierKey(k))
+        .Select(k => KeyToDisplayString(k))
+        .ToList();
+
+    parts.AddRange(mainKeys);
+
+    if (parts.Count == 0)
     {
-        var mods = System.Windows.Input.Keyboard.Modifiers;
-        var parts = new System.Collections.Generic.List<string>();
-
-        if ((mods & System.Windows.Input.ModifierKeys.Control) != 0)
-            parts.Add("Ctrl");
-        if ((mods & System.Windows.Input.ModifierKeys.Alt) != 0)
-            parts.Add("Alt");
-        if ((mods & System.Windows.Input.ModifierKeys.Shift) != 0)
-            parts.Add("Shift");
-        if ((mods & System.Windows.Input.ModifierKeys.Windows) != 0)
-            parts.Add("Win");
-
-        // add non-modifier keys from keysDown
-        var mainKeys = keysDown.Where(k => !IsModifierKey(k)).Select(k => KeyToDisplayString(k)).ToList();
-        if (mainKeys.Count > 0)
-            parts.AddRange(mainKeys);
-
-        if (parts.Count == 0)
-        {
-            // if nothing pressed thefadeout will kick in
-            // but also ensure text is blank
-            KeyText.Text = string.Empty;
-        }
-        else
-        {
-            var text = string.Join("+", parts);
-            KeyText.Text = text;
-            KeyText.FontSize = keyFontSize;
-            KeyText.FontFamily = keyFontFamily;
-            KeyText.Foreground = new System.Windows.Media.SolidColorBrush(keyForegroundColor);
-
-            // make visible and stop hide timer
-            KeyText.BeginAnimation(UIElement.OpacityProperty, null);
-            KeyText.Opacity = 1.0;
-            keyHideTimer.Stop();
-        }
+        KeyText.Text = string.Empty;
     }
+    else
+    {
+        KeyText.Text = string.Join("+", parts);
+        KeyText.FontSize = keyFontSize;
+        KeyText.FontFamily = keyFontFamily;
+        KeyText.Foreground = new SolidColorBrush(keyForegroundColor);
+
+        KeyText.BeginAnimation(UIElement.OpacityProperty, null);
+        KeyText.Opacity = 1.0;
+        keyHideTimer.Stop();
+    }
+}
+
+
+    // private void UpdateKeyDisplay()
+    // {
+    //     var mods = System.Windows.Input.Keyboard.Modifiers;
+    //     var parts = new System.Collections.Generic.List<string>();
+
+    //     if ((mods & System.Windows.Input.ModifierKeys.Control) != 0)
+    //         parts.Add("Ctrl");
+    //     if ((mods & System.Windows.Input.ModifierKeys.Alt) != 0)
+    //         parts.Add("Alt");
+    //     if ((mods & System.Windows.Input.ModifierKeys.Shift) != 0)
+    //         parts.Add("Shift");
+    //     if ((mods & System.Windows.Input.ModifierKeys.Windows) != 0)
+    //         parts.Add("Win");
+
+    //     // add non-modifier keys from keysDown
+    //     var mainKeys = keysDown.Where(k => !IsModifierKey(k)).Select(k => KeyToDisplayString(k)).ToList();
+    //     if (mainKeys.Count > 0)
+    //         parts.AddRange(mainKeys);
+
+    //     if (parts.Count == 0)
+    //     {
+    //         // if nothing pressed thefadeout will kick in
+    //         // but also ensure text is blank
+    //         KeyText.Text = string.Empty;
+    //     }
+    //     else
+    //     {
+    //         var text = string.Join("+", parts);
+    //         KeyText.Text = text;
+    //         KeyText.FontSize = keyFontSize;
+    //         KeyText.FontFamily = keyFontFamily;
+    //         KeyText.Foreground = new System.Windows.Media.SolidColorBrush(keyForegroundColor);
+
+    //         // make visible and stop hide timer
+    //         KeyText.BeginAnimation(UIElement.OpacityProperty, null);
+    //         KeyText.Opacity = 1.0;
+    //         keyHideTimer.Stop();
+    //     }
+    // }
 
     private string KeyToDisplayString(System.Windows.Input.Key k)
     {
