@@ -6,16 +6,13 @@
         xmlns:local="clr-namespace:minol"
         mc:Ignorable="d"
         Title="Analyze Values"
-        Width="1600"
-        Height="1000"
-        WindowStyle="None"
-        ResizeMode="NoResize"
-        AllowsTransparency="True"
+        Width="1280"
+        Height="720"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="CanResizeWithGrip"
+        AllowsTransparency="False"
         Background="#1A1A1A"
-        Foreground="#E0E0E0"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        MouseMove="Window_MouseMove"
-        MouseLeftButtonUp="Window_MouseLeftButtonUp">
+        Foreground="#E0E0E0">
 
     <Border BorderBrush="#404040"
             BorderThickness="1">
@@ -25,34 +22,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Title Bar -->
-            <Border Grid.Row="0"
-                    Background="#1F1F1F"
-                    Padding="12,0,12,0"
-                    x:Name="TitleBar">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="Analyze Values"
-                               FontSize="12"
-                               FontWeight="Bold"
-                               Foreground="#E0E0E0"
-                               VerticalAlignment="Center"/>
-                    <Button Grid.Column="1"
-                            Content="✕"
-                            Click="Close_Click"
-                            Width="32"
-                            Height="32"
-                            Background="Transparent"
-                            Foreground="#FF6B6B"
-                            FontSize="14"
-                            Cursor="Hand"
-                            Padding="0"/>
-                </Grid>
-            </Border>
+
 
             <!-- Main Content -->
             <Grid Grid.Row="1">

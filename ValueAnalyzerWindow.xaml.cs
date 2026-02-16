@@ -20,12 +20,12 @@ public partial class ValueAnalyzerWindow : Window
 
     private DispatcherTimer? updateTimer;
 
-    // Drag and resize fields
-    private System.Windows.Point dragStartPoint;
-    private bool isResizing = false;
-    private ResizeDirection resizeDirection = ResizeDirection.None;
+    // // Drag and resize fields
+    // private System.Windows.Point dragStartPoint;
+    // private bool isResizing = false;
+    // private ResizeDirection resizeDirection = ResizeDirection.None;
 
-    private enum ResizeDirection { None, TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight }
+    // private enum ResizeDirection { None, TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight }
 
     public ValueAnalyzerWindow(Bitmap? screenshot)
     {
@@ -312,126 +312,126 @@ public partial class ValueAnalyzerWindow : Window
         this.Close();
     }
 
-    private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-        System.Windows.Point windowRelativePoint = e.GetPosition(this);
+    // private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    // {
+    //     System.Windows.Point windowRelativePoint = e.GetPosition(this);
 
-        const int resizeBorder = 5;
-        double x = windowRelativePoint.X;
-        double y = windowRelativePoint.Y;
+    //     const int resizeBorder = 5;
+    //     double x = windowRelativePoint.X;
+    //     double y = windowRelativePoint.Y;
 
-        // Determine if we're clicking on a resize area
-        if (y < resizeBorder)
-        {
-            if (x < resizeBorder) resizeDirection = ResizeDirection.TopLeft;
-            else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.TopRight;
-            else resizeDirection = ResizeDirection.Top;
-            isResizing = true;
-            dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
-        }
-        else if (y > this.ActualHeight - resizeBorder)
-        {
-            if (x < resizeBorder) resizeDirection = ResizeDirection.BottomLeft;
-            else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.BottomRight;
-            else resizeDirection = ResizeDirection.Bottom;
-            isResizing = true;
-            dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
-        }
-        else if (x < resizeBorder)
-        {
-            resizeDirection = ResizeDirection.Left;
-            isResizing = true;
-            dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
-        }
-        else if (x > this.ActualWidth - resizeBorder)
-        {
-            resizeDirection = ResizeDirection.Right;
-            isResizing = true;
-            dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
-        }
-        else if (y < 32) // Click on title bar — use WPF's smooth DragMove
-        {
-            try
-            {
-                this.DragMove();
-            }
-            catch { }
-        }
-    }
+    //     // Determine if we're clicking on a resize area
+    //     if (y < resizeBorder)
+    //     {
+    //         if (x < resizeBorder) resizeDirection = ResizeDirection.TopLeft;
+    //         else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.TopRight;
+    //         else resizeDirection = ResizeDirection.Top;
+    //         isResizing = true;
+    //         dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
+    //     }
+    //     else if (y > this.ActualHeight - resizeBorder)
+    //     {
+    //         if (x < resizeBorder) resizeDirection = ResizeDirection.BottomLeft;
+    //         else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.BottomRight;
+    //         else resizeDirection = ResizeDirection.Bottom;
+    //         isResizing = true;
+    //         dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
+    //     }
+    //     else if (x < resizeBorder)
+    //     {
+    //         resizeDirection = ResizeDirection.Left;
+    //         isResizing = true;
+    //         dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
+    //     }
+    //     else if (x > this.ActualWidth - resizeBorder)
+    //     {
+    //         resizeDirection = ResizeDirection.Right;
+    //         isResizing = true;
+    //         dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
+    //     }
+    //     else if (y < 32) // Click on title bar — use WPF's smooth DragMove
+    //     {
+    //         try
+    //         {
+    //             this.DragMove();
+    //         }
+    //         catch { }
+    //     }
+    // }
 
-    private void Window_MouseMove(object sender, MouseEventArgs e)
-    {
-        if (isResizing)
-        {
-            System.Windows.Point currentPoint = e.GetPosition(null);
-            double deltaX = currentPoint.X - dragStartPoint.X;
-            double deltaY = currentPoint.Y - dragStartPoint.Y;
+    // private void Window_MouseMove(object sender, MouseEventArgs e)
+    // {
+    //     if (isResizing)
+    //     {
+    //         System.Windows.Point currentPoint = e.GetPosition(null);
+    //         double deltaX = currentPoint.X - dragStartPoint.X;
+    //         double deltaY = currentPoint.Y - dragStartPoint.Y;
 
-            switch (resizeDirection)
-            {
-                case ResizeDirection.Top:
-                    this.Top += deltaY;
-                    this.Height -= deltaY;
-                    break;
-                case ResizeDirection.Bottom:
-                    this.Height += deltaY;
-                    break;
-                case ResizeDirection.Left:
-                    this.Left += deltaX;
-                    this.Width -= deltaX;
-                    break;
-                case ResizeDirection.Right:
-                    this.Width += deltaX;
-                    break;
-                case ResizeDirection.TopLeft:
-                    this.Top += deltaY;
-                    this.Height -= deltaY;
-                    this.Left += deltaX;
-                    this.Width -= deltaX;
-                    break;
-                case ResizeDirection.TopRight:
-                    this.Top += deltaY;
-                    this.Height -= deltaY;
-                    this.Width += deltaX;
-                    break;
-                case ResizeDirection.BottomLeft:
-                    this.Height += deltaY;
-                    this.Left += deltaX;
-                    this.Width -= deltaX;
-                    break;
-                case ResizeDirection.BottomRight:
-                    this.Height += deltaY;
-                    this.Width += deltaX;
-                    break;
-            }
+    //         switch (resizeDirection)
+    //         {
+    //             case ResizeDirection.Top:
+    //                 this.Top += deltaY;
+    //                 this.Height -= deltaY;
+    //                 break;
+    //             case ResizeDirection.Bottom:
+    //                 this.Height += deltaY;
+    //                 break;
+    //             case ResizeDirection.Left:
+    //                 this.Left += deltaX;
+    //                 this.Width -= deltaX;
+    //                 break;
+    //             case ResizeDirection.Right:
+    //                 this.Width += deltaX;
+    //                 break;
+    //             case ResizeDirection.TopLeft:
+    //                 this.Top += deltaY;
+    //                 this.Height -= deltaY;
+    //                 this.Left += deltaX;
+    //                 this.Width -= deltaX;
+    //                 break;
+    //             case ResizeDirection.TopRight:
+    //                 this.Top += deltaY;
+    //                 this.Height -= deltaY;
+    //                 this.Width += deltaX;
+    //                 break;
+    //             case ResizeDirection.BottomLeft:
+    //                 this.Height += deltaY;
+    //                 this.Left += deltaX;
+    //                 this.Width -= deltaX;
+    //                 break;
+    //             case ResizeDirection.BottomRight:
+    //                 this.Height += deltaY;
+    //                 this.Width += deltaX;
+    //                 break;
+    //         }
 
-            dragStartPoint = currentPoint;
-        }
-        else
-        {
-            // Update cursor based on position for resize feedback
-            double x = e.GetPosition(this).X;
-            double y = e.GetPosition(this).Y;
-            const int resizeBorder = 5;
+    //         dragStartPoint = currentPoint;
+    //     }
+    //     else
+    //     {
+    //         // Update cursor based on position for resize feedback
+    //         double x = e.GetPosition(this).X;
+    //         double y = e.GetPosition(this).Y;
+    //         const int resizeBorder = 5;
 
-            if ((y < resizeBorder && x < resizeBorder) || (y > this.ActualHeight - resizeBorder && x > this.ActualWidth - resizeBorder))
-                this.Cursor = Cursors.SizeNWSE;
-            else if ((y < resizeBorder && x > this.ActualWidth - resizeBorder) || (y > this.ActualHeight - resizeBorder && x < resizeBorder))
-                this.Cursor = Cursors.SizeNESW;
-            else if (y < resizeBorder || y > this.ActualHeight - resizeBorder)
-                this.Cursor = Cursors.SizeNS;
-            else if (x < resizeBorder || x > this.ActualWidth - resizeBorder)
-                this.Cursor = Cursors.SizeWE;
-            else
-                this.Cursor = Cursors.Arrow;
-        }
-    }
+    //         if ((y < resizeBorder && x < resizeBorder) || (y > this.ActualHeight - resizeBorder && x > this.ActualWidth - resizeBorder))
+    //             this.Cursor = Cursors.SizeNWSE;
+    //         else if ((y < resizeBorder && x > this.ActualWidth - resizeBorder) || (y > this.ActualHeight - resizeBorder && x < resizeBorder))
+    //             this.Cursor = Cursors.SizeNESW;
+    //         else if (y < resizeBorder || y > this.ActualHeight - resizeBorder)
+    //             this.Cursor = Cursors.SizeNS;
+    //         else if (x < resizeBorder || x > this.ActualWidth - resizeBorder)
+    //             this.Cursor = Cursors.SizeWE;
+    //         else
+    //             this.Cursor = Cursors.Arrow;
+    //     }
+    // }
 
-    private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-    {
-        isResizing = false;
-        resizeDirection = ResizeDirection.None;
-    }
+    // private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    // {
+    //     isResizing = false;
+    //     resizeDirection = ResizeDirection.None;
+    // }
 
     protected override void OnClosed(EventArgs e)
     {
