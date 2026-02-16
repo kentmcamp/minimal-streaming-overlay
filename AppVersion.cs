@@ -7,8 +7,8 @@ public static class AppVersion
 {
     // Single-source version numbers
     public const int Major = 1;
-    public const int Minor = 4;
-    public const int Patch = 6;
+    public const int Minor = 0;
+    public const int Patch = 0;
 
     public static string VersionString => $"{Major}.{Minor}.{Patch}";
 
