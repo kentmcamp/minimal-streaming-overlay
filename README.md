@@ -21,15 +21,13 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 - **Value Viewer Greytone Slider** - It starts at 8 but the sliders shows it starting at 255.
 - **Key Renaming** - Some non letter keys (like brackets, numbers, special charactrers) display unclear names or generic assigning like OEM6. These need to be mapped to clearer names.
 - **Change Edit to Settings** - The "Edit" option should say "Settings".
-- **Context Menu Icons** - Have icons for the options in the context menu.
   
 ### Minor/Major Updates Planned
+- **Value Viewer Screenshot Select Crop** - When a user clicks the analyze value button, instead of just a screenshot, they can drag over an area of the desktop they want analyzed specifically.
 - **Edit Themes** - Right now themes can be edited only by entering the same name of a previously saved theme to overwrite it. Future updates should include an overwrite button directly in the menu.
-- **Preview Configurations** - A way to see what the overlay (with timer, key input, and background) will look like before applying settings.
 - **Double Click to Reset Timer** - Just like how single clicking on the app overlay pauses the timer, double-clicking can reset the timer to zero.
 - **Preview Font** - See each font name in the list using its own font family, so users can see what the font looks like before selecting.
 - **Choose Directory** - The user should be able to change the theme and saved configurations directory themselves
-- **Enable/Disable Timer/Keyinput** - Options in the edit menu to disable/enable the timer and the keyinputs, so the user can use one without the other.
 - **Shortcut Click Options** - The option to click to pause/unpause and later, double click to reset the timer, should have options in the edit menu to enable/disable these features.
 
 ### New Features Planned
