@@ -17,7 +17,8 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
     - Patch: Fixed issue where the *Value Viewer* window moved erratically when dragging or resizing.
 
 ## 🚧 Planned Updates
-### Patches and Minor Updates
+### Patches and Minor Updates Planned:
+- **Key Renaming** - Some non letter keys (like brackets, numbers, special charactrers) display unclear names or generic assigning like OEM6. These need to be mapped to clearer names.
 - **Enable/Disable Timer/Keyinput** - Options in the edit menu to disable/enable the timer and the keyinputs, so the user can use one without the other.
 - **Edit Themes** - Right now themes can be edited only by entering the same name of a previously saved theme to overwrite it. Future updates should include an overwrite button directly in the menu.
 - **Choose Directory** - The user should be able to change the theme and saved configurations directory themselves
@@ -29,7 +30,7 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 - **Context Menu Icons** - Have icons for the options in the context menu.
 - **Pause/Play Icons** - Temporarily show a pause or play icon when the user pauses/unpauses the timer via clicking on the overlay. 
 
-### Full Features
+### Full Features Planned:
 - **Color Picker** - A streamlined color picker option in the context menu.
 
 ## ✨ Features
