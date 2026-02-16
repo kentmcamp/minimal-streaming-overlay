@@ -17,20 +17,22 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
     - Patch: Fixed issue where the *Value Viewer* window moved erratically when dragging or resizing.
 
 ## 🚧 Planned Updates
-### Patches and Minor Updates Planned:
+### Fixes and Patches Planned
+- **Value Viewer Greytone Slider** - It starts at 8 but the sliders shows it starting at 255.
 - **Key Renaming** - Some non letter keys (like brackets, numbers, special charactrers) display unclear names or generic assigning like OEM6. These need to be mapped to clearer names.
-- **Enable/Disable Timer/Keyinput** - Options in the edit menu to disable/enable the timer and the keyinputs, so the user can use one without the other.
-- **Edit Themes** - Right now themes can be edited only by entering the same name of a previously saved theme to overwrite it. Future updates should include an overwrite button directly in the menu.
-- **Choose Directory** - The user should be able to change the theme and saved configurations directory themselves
-- **Double Click to Reset Timer** - Just like how single clicking on the app overlay pauses the timer, double-clicking can reset the timer to zero.
-- **Shortcut Click Options** - The option to click to pause/unpause and later, double click to reset the timer, should have options in the edit menu to enable/disable these features.
-- **Preview Font** - See each font name in the list using its own font family, so users can see what the font looks like before selecting.
-- **Preview Configurations** - A way to see what the overlay (with timer, key input, and background) will look like before applying settings.
-- **Change Edit to Settings** - The "Edit" option should probably just say "Settings".
+- **Change Edit to Settings** - The "Edit" option should say "Settings".
 - **Context Menu Icons** - Have icons for the options in the context menu.
-- **Pause/Play Icons** - Temporarily show a pause or play icon when the user pauses/unpauses the timer via clicking on the overlay. 
+  
+### Minor/Major Updates Planned
+- **Edit Themes** - Right now themes can be edited only by entering the same name of a previously saved theme to overwrite it. Future updates should include an overwrite button directly in the menu.
+- **Preview Configurations** - A way to see what the overlay (with timer, key input, and background) will look like before applying settings.
+- **Double Click to Reset Timer** - Just like how single clicking on the app overlay pauses the timer, double-clicking can reset the timer to zero.
+- **Preview Font** - See each font name in the list using its own font family, so users can see what the font looks like before selecting.
+- **Choose Directory** - The user should be able to change the theme and saved configurations directory themselves
+- **Enable/Disable Timer/Keyinput** - Options in the edit menu to disable/enable the timer and the keyinputs, so the user can use one without the other.
+- **Shortcut Click Options** - The option to click to pause/unpause and later, double click to reset the timer, should have options in the edit menu to enable/disable these features.
 
-### Full Features Planned:
+### New Features Planned
 - **Color Picker** - A streamlined color picker option in the context menu.
 
 ## ✨ Features
