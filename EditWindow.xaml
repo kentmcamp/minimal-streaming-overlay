@@ -156,7 +156,7 @@
                                    Foreground="#333"
                                    Margin="0,0,0,10"/>
 
-                        <TextBlock Text="minol is a lightweight, always-on-top Windows overlay for software tutorials.
+                        <TextBlock Text="minol is a lightweight, always-on-top Windows overlay for software tutorials."
                                    FontSize="11"
                                    Foreground="#666"
                                    TextWrapping="Wrap"
