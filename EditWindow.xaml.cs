@@ -11,6 +11,33 @@ public partial class EditWindow : Window
 {
     private readonly MainWindow ownerWindow;
     private string? currentlyLoadedThemeName;
+    private static readonly string[] AvailableColors = new string[]
+    {
+        // Light
+        "White", "Snow", "Ivory", "Beige",
+        "LightGray", "Gainsboro", "Silver",
+        "LightYellow", "LightBlue", "LightCyan",
+        "LightPink", "Lavender", "MistyRose",
+
+        // Mid
+        "Gray", "SlateGray", "SteelBlue",
+        "CornflowerBlue", "Teal", "Turquoise",
+        "MediumPurple", "MediumSeaGreen",
+        "Orange", "Goldenrod",
+
+        // Strong
+        "Red", "Crimson", "OrangeRed",
+        "Yellow", "Lime", "Cyan",
+        "DodgerBlue", "RoyalBlue",
+        "Magenta", "HotPink",
+
+        // Dark
+        "Black", "DimGray", "DarkGray",
+        "DarkSlateGray", "DarkBlue",
+        "MidnightBlue", "Navy",
+        "DarkRed", "DarkGreen",
+        "DarkMagenta"
+    };
 
     public EditWindow(MainWindow owner)
     {
@@ -27,21 +54,18 @@ public partial class EditWindow : Window
         FontSizeCombo.ItemsSource = sizes;
         KeyFontSizeCombo.ItemsSource = sizes;
 
-        // Colors list
-        string[] colors = new string[] { "White", "Black", "Red", "Green", "Blue", "Yellow", "Gray", "Orange", "Purple", "Pink", "Teal", "LightGray", "DarkGray", "DarkBlue", "DarkMagenta" };
-        FontColorCombo.ItemsSource = colors;
-        BackgroundColorCombo.ItemsSource = colors;
-        KeyFontColorCombo.ItemsSource = colors;
+        // ✅ Use the shared color list
+        FontColorCombo.ItemsSource = AvailableColors;
+        BackgroundColorCombo.ItemsSource = AvailableColors;
+        KeyFontColorCombo.ItemsSource = AvailableColors;
 
-        // Initialize with current values
         InitializeSettingsFromOwner();
         RefreshThemesList();
 
-        // Opacity value display
         OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
-        OpacitySlider.ValueChanged += (s, e) => OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
+        OpacitySlider.ValueChanged += (s, e) =>
+            OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
 
-        // Set version text in About tab
         AboutVersionText.Text = AppVersion.DisplayName;
     }
 
@@ -152,8 +176,6 @@ public partial class EditWindow : Window
         if (string.IsNullOrWhiteSpace(name)) return fallback;
         try
         {
-            if (name == "Green")
-                return Colors.Lime;
 
             var prop = typeof(Colors).GetProperty(name);
             if (prop != null)
@@ -166,22 +188,21 @@ public partial class EditWindow : Window
     }
 
     private string? GetColorName(Color color)
+{
+    foreach (var colorName in AvailableColors)
     {
-        string[] availableColors = new string[] { "White", "Black", "Red", "Green", "Blue", "Yellow", "Gray", "Orange", "Purple", "Pink", "Teal", "LightGray", "DarkGray", "DarkBlue", "DarkMagenta" };
+        var namedColor = ParseColorFromName(colorName, Colors.Black);
 
-        foreach (var colorName in availableColors)
+        if (namedColor.R == color.R &&
+            namedColor.G == color.G &&
+            namedColor.B == color.B)
         {
-            var namedColor = ParseColorFromName(colorName, Colors.Black);
-            if (namedColor.R == color.R && namedColor.G == color.G && namedColor.B == color.B)
-                return colorName;
+            return colorName;
         }
-
-        if (color.R == 0 && color.G == 255 && color.B == 0)
-            return "Green";
-
-        return null;
     }
 
+    return null;
+}
     private AppSettings GetCurrentSettings()
     {
         var ff = FontFamilyCombo.SelectedItem as FontFamily ?? ownerWindow.TimerFontFamily;
@@ -363,6 +384,7 @@ public partial class EditWindow : Window
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
         }
-        catch { };
+        catch { }
+        ;
     }
 }

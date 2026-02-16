@@ -20,17 +20,11 @@ public partial class ValueAnalyzerWindow : Window
 
     private DispatcherTimer? updateTimer;
 
-    // // Drag and resize fields
-    // private System.Windows.Point dragStartPoint;
-    // private bool isResizing = false;
-    // private ResizeDirection resizeDirection = ResizeDirection.None;
-
-    // private enum ResizeDirection { None, TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight }
-
     public ValueAnalyzerWindow(Bitmap? screenshot)
     {
         InitializeComponent();
 
+        //Timer for debouncing sliders
         updateTimer = new DispatcherTimer();
         updateTimer.Interval = TimeSpan.FromMilliseconds(30);
         updateTimer.Tick += (s, e) =>
@@ -54,9 +48,6 @@ public partial class ValueAnalyzerWindow : Window
         {
             CenterWindowOnMonitor();
             ProcessAndDisplay();
-            // updateTimer?.Stop();
-            // updateTimer?.Start();
-
         };
     }
 
@@ -98,18 +89,17 @@ public partial class ValueAnalyzerWindow : Window
         }
     }
 
-    /// <summary>
+
     /// Process the image from the original, applying all transformations in sequence.
-    /// </summary>
     private Bitmap ProcessImage(Bitmap source, byte posterizeLevels, byte blackLevel, byte whiteLevel, bool flipH, bool flipV)
     {
         // Create a working copy
         var working = new Bitmap(source.Width, source.Height, PixelFormat.Format32bppRgb);
 
-        // Step 1: Convert to grayscale and apply levels and posterization
+        // Convert to grayscale and apply levels and posterization
         ApplyGrayscaleAndLevels(source, working, posterizeLevels, blackLevel, whiteLevel);
 
-        // Step 2: Apply flips if needed
+        // Apply flips if needed
         if (flipH || flipV)
         {
             ApplyFlips(working, flipH, flipV);
@@ -118,9 +108,8 @@ public partial class ValueAnalyzerWindow : Window
         return working;
     }
 
-    /// <summary>
+
     /// Apply grayscale conversion, level remapping, and posterization using LockBits for performance.
-    /// </summary>
     private void ApplyGrayscaleAndLevels(Bitmap source, Bitmap destination, byte posterizeLevels, byte blackLevel, byte whiteLevel)
     {
         BitmapData srcData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
@@ -176,13 +165,13 @@ public partial class ValueAnalyzerWindow : Window
         }
     }
 
-    /// <summary>
+
     /// Apply posterization to a single value.
     /// Quantizes the value to one of N discrete levels.
     /// step = 255 / (levels - 1)
     /// index = round(value / step)  // which level?
     /// newValue = index * step       // that level's value
-    /// </summary>
+
     private byte PosterizeValue(byte value, byte levels)
     {
         if (levels <= 1)
@@ -194,9 +183,7 @@ public partial class ValueAnalyzerWindow : Window
         return quantized;
     }
 
-    /// <summary>
     /// Apply horizontal and/or vertical flips to the bitmap.
-    /// </summary>
     private void ApplyFlips(Bitmap bitmap, bool horizontal, bool vertical)
     {
         if (horizontal)
@@ -205,9 +192,7 @@ public partial class ValueAnalyzerWindow : Window
             bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
     }
 
-    /// <summary>
     /// Convert a System.Drawing.Bitmap to a WPF WriteableBitmap for display.
-    /// </summary>
     private WriteableBitmap ConvertBitmapToWriteableBitmap(Bitmap bitmap)
     {
         var writeableBitmap = new WriteableBitmap(bitmap.Width, bitmap.Height, 96, 96, System.Windows.Media.PixelFormats.Bgr32, null);
@@ -232,8 +217,7 @@ public partial class ValueAnalyzerWindow : Window
         return writeableBitmap;
     }
 
-    // Event handlers for UI controls
-
+    // Level Sliders
     private void PosterizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (!IsLoaded) return;
@@ -284,6 +268,7 @@ public partial class ValueAnalyzerWindow : Window
         updateTimer?.Start();
     }
 
+    // Flip/mirror buttons
     private void FlipHorizontal_Click(object sender, RoutedEventArgs e)
     {
         flipHorizontal = !flipHorizontal;
@@ -297,7 +282,6 @@ public partial class ValueAnalyzerWindow : Window
     {
         flipVertical = !flipVertical;
         FlipVerticalButton.Background = flipVertical ? System.Windows.Media.Brushes.DarkGreen : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(64, 64, 64));
-        // ProcessAndDisplay();
         updateTimer?.Stop();
         updateTimer?.Start();
     }
@@ -311,127 +295,6 @@ public partial class ValueAnalyzerWindow : Window
     {
         this.Close();
     }
-
-    // private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    // {
-    //     System.Windows.Point windowRelativePoint = e.GetPosition(this);
-
-    //     const int resizeBorder = 5;
-    //     double x = windowRelativePoint.X;
-    //     double y = windowRelativePoint.Y;
-
-    //     // Determine if we're clicking on a resize area
-    //     if (y < resizeBorder)
-    //     {
-    //         if (x < resizeBorder) resizeDirection = ResizeDirection.TopLeft;
-    //         else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.TopRight;
-    //         else resizeDirection = ResizeDirection.Top;
-    //         isResizing = true;
-    //         dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
-    //     }
-    //     else if (y > this.ActualHeight - resizeBorder)
-    //     {
-    //         if (x < resizeBorder) resizeDirection = ResizeDirection.BottomLeft;
-    //         else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.BottomRight;
-    //         else resizeDirection = ResizeDirection.Bottom;
-    //         isResizing = true;
-    //         dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
-    //     }
-    //     else if (x < resizeBorder)
-    //     {
-    //         resizeDirection = ResizeDirection.Left;
-    //         isResizing = true;
-    //         dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
-    //     }
-    //     else if (x > this.ActualWidth - resizeBorder)
-    //     {
-    //         resizeDirection = ResizeDirection.Right;
-    //         isResizing = true;
-    //         dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
-    //     }
-    //     else if (y < 32) // Click on title bar — use WPF's smooth DragMove
-    //     {
-    //         try
-    //         {
-    //             this.DragMove();
-    //         }
-    //         catch { }
-    //     }
-    // }
-
-    // private void Window_MouseMove(object sender, MouseEventArgs e)
-    // {
-    //     if (isResizing)
-    //     {
-    //         System.Windows.Point currentPoint = e.GetPosition(null);
-    //         double deltaX = currentPoint.X - dragStartPoint.X;
-    //         double deltaY = currentPoint.Y - dragStartPoint.Y;
-
-    //         switch (resizeDirection)
-    //         {
-    //             case ResizeDirection.Top:
-    //                 this.Top += deltaY;
-    //                 this.Height -= deltaY;
-    //                 break;
-    //             case ResizeDirection.Bottom:
-    //                 this.Height += deltaY;
-    //                 break;
-    //             case ResizeDirection.Left:
-    //                 this.Left += deltaX;
-    //                 this.Width -= deltaX;
-    //                 break;
-    //             case ResizeDirection.Right:
-    //                 this.Width += deltaX;
-    //                 break;
-    //             case ResizeDirection.TopLeft:
-    //                 this.Top += deltaY;
-    //                 this.Height -= deltaY;
-    //                 this.Left += deltaX;
-    //                 this.Width -= deltaX;
-    //                 break;
-    //             case ResizeDirection.TopRight:
-    //                 this.Top += deltaY;
-    //                 this.Height -= deltaY;
-    //                 this.Width += deltaX;
-    //                 break;
-    //             case ResizeDirection.BottomLeft:
-    //                 this.Height += deltaY;
-    //                 this.Left += deltaX;
-    //                 this.Width -= deltaX;
-    //                 break;
-    //             case ResizeDirection.BottomRight:
-    //                 this.Height += deltaY;
-    //                 this.Width += deltaX;
-    //                 break;
-    //         }
-
-    //         dragStartPoint = currentPoint;
-    //     }
-    //     else
-    //     {
-    //         // Update cursor based on position for resize feedback
-    //         double x = e.GetPosition(this).X;
-    //         double y = e.GetPosition(this).Y;
-    //         const int resizeBorder = 5;
-
-    //         if ((y < resizeBorder && x < resizeBorder) || (y > this.ActualHeight - resizeBorder && x > this.ActualWidth - resizeBorder))
-    //             this.Cursor = Cursors.SizeNWSE;
-    //         else if ((y < resizeBorder && x > this.ActualWidth - resizeBorder) || (y > this.ActualHeight - resizeBorder && x < resizeBorder))
-    //             this.Cursor = Cursors.SizeNESW;
-    //         else if (y < resizeBorder || y > this.ActualHeight - resizeBorder)
-    //             this.Cursor = Cursors.SizeNS;
-    //         else if (x < resizeBorder || x > this.ActualWidth - resizeBorder)
-    //             this.Cursor = Cursors.SizeWE;
-    //         else
-    //             this.Cursor = Cursors.Arrow;
-    //     }
-    // }
-
-    // private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-    // {
-    //     isResizing = false;
-    //     resizeDirection = ResizeDirection.None;
-    // }
 
     protected override void OnClosed(EventArgs e)
     {
