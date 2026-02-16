@@ -39,6 +39,8 @@ public partial class EditWindow : Window
         "DarkMagenta"
     };
 
+    private bool fontsLoaded = false;
+
     public EditWindow(MainWindow owner)
     {
         InitializeComponent();
@@ -128,6 +130,30 @@ public partial class EditWindow : Window
         };
     }
 
+private void KeyFontFamilyCombo_DropDownOpened(object sender, EventArgs e)
+{
+    if (fontsLoaded) return;
+
+    var families = Fonts.SystemFontFamilies
+        .OrderBy(f => f.Source)
+        .ToList();
+
+    KeyFontFamilyCombo.ItemsSource = families;
+
+    fontsLoaded = true;
+}
+private void FontFamilyCombo_DropDownOpened(object sender, EventArgs e)
+{
+    if (fontsLoaded) return;
+
+    var families = Fonts.SystemFontFamilies
+        .OrderBy(f => f.Source)
+        .ToList();
+
+    KeyFontFamilyCombo.ItemsSource = families;
+
+    fontsLoaded = true;
+}
     private void UpdateCurrentThemeDisplay()
     {
         if (!string.IsNullOrWhiteSpace(currentlyLoadedThemeName))
