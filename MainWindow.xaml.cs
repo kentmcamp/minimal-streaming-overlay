@@ -101,8 +101,6 @@ public partial class MainWindow : Window
         this.MouseLeftButtonDown += Window_MouseLeftButtonDown;
         this.MouseLeftButtonUp += Window_MouseLeftButtonUp;
         this.MouseMove += Window_MouseMove;
-        this.PreviewKeyDown += Window_PreviewKeyDown;
-        this.PreviewKeyUp += Window_PreviewKeyUp;
         this.Loaded += (s, e) => { PositionWindow(); Keyboard.Focus(this); };
 
         keyHideTimer.Tick += KeyHideTimer_Tick;
@@ -164,49 +162,6 @@ public partial class MainWindow : Window
             stopwatch.Stop();
         else
             stopwatch.Start();
-    }
-
-    private void Window_PreviewKeyDown(object? sender, KeyEventArgs e)
-    {
-        // add key to set and update display (ignore repeats)
-        if (!keysDown.Contains(e.Key))
-        {
-            keysDown.Add(e.Key);
-            UpdateKeyDisplay();
-        }
-
-        e.Handled = false;
-    }
-
-    private void Window_PreviewKeyUp(object? sender, KeyEventArgs e)
-    {
-        if (keysDown.Contains(e.Key))
-            keysDown.Remove(e.Key);
-
-        if (keysDown.Count == 0)
-        {
-            // All keys released, unfreeze if frozen and start hide timer
-            isChordFrozen = false;
-            chordDisplayTimer.Stop();
-            keyHideTimer.Stop();
-            keyHideTimer.Interval = TimeSpan.FromSeconds(keyShowSeconds);
-            keyHideTimer.Start();
-        }
-        else if (!isChordFrozen)
-        {
-            // Some keys still down but chord not yet frozen.
-            // Capture current display and freeze it.
-            frozenChordText = KeyText.Text;
-            if (!string.IsNullOrEmpty(frozenChordText))
-            {
-                isChordFrozen = true;
-                chordDisplayTimer.Stop();
-                chordDisplayTimer.Interval = TimeSpan.FromSeconds(keyChordHoldSeconds);
-                chordDisplayTimer.Start();
-            }
-        }
-
-        e.Handled = false;
     }
 
     private bool IsModifierKey(System.Windows.Input.Key k)
