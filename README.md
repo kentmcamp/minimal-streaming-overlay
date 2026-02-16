@@ -4,7 +4,7 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 
 ## 📥 Installation
 
-1. **Download** the latest release: [minol242rc2.7z](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/2.4.2rc2)
+1. **Download** the latest release: [minol.zip](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/1.0.0)
 2. **Extract** the archive to desired location
 3. **Run** `minol.exe`
 
