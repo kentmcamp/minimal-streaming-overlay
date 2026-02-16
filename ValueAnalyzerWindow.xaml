@@ -68,7 +68,7 @@
                             <TextBlock Text="Gray Levels" FontSize="11" Foreground="#B0B0B0" Grid.Column="0"/>
                             <TextBlock x:Name="PosterizeLevelText" Text="256" FontSize="11" Foreground="#90EE90" Grid.Column="2"/>
                         </Grid>
-                        <Slider x:Name="PosterizeSlider" Minimum="2" Maximum="20" Value="20" IsSnapToTickEnabled="True"
+                        <Slider x:Name="PosterizeSlider" Minimum="2" Maximum="255" Value="8" IsSnapToTickEnabled="False"
                                 Background="#404040" Foreground="#90EE90" PreviewMouseLeftButtonUp="PosterizeSlider_PreviewMouseLeftButtonUp"/>
                     </StackPanel>
 

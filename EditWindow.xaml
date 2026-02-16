@@ -142,7 +142,7 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <TextBlock Text="Streaming Overlay with Timer and Keyboard Input Display"
+                        <TextBlock Text="Timer, Keyboard Input Display, and Greytone Value Analyzer"
                                    FontSize="12"
                                    Foreground="#666"
                                    TextWrapping="Wrap"
@@ -156,7 +156,7 @@
                                    Foreground="#333"
                                    Margin="0,0,0,10"/>
 
-                        <TextBlock Text="minol is a lightweight, always-on-top Windows overlay designed for streamers and content creators. Perfect for showcasing real-time input and elapsed time during gameplay, speedruns, or any live performance."
+                        <TextBlock Text="minol is a lightweight, always-on-top Windows overlay for software tutorials.
                                    FontSize="11"
                                    Foreground="#666"
                                    TextWrapping="Wrap"
