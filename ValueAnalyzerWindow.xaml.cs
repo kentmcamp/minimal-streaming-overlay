@@ -24,6 +24,14 @@ public partial class ValueAnalyzerWindow : Window
     {
         InitializeComponent();
 
+        posterizeLevels = (byte)PosterizeSlider.Value;
+        blackLevel = (byte)BlackLevelSlider.Value;
+        whiteLevel = (byte)WhiteLevelSlider.Value;
+
+        PosterizeLevelText.Text = posterizeLevels.ToString();
+        BlackLevelText.Text = blackLevel.ToString();
+        WhiteLevelText.Text = whiteLevel.ToString();
+
         //Timer for debouncing sliders
         updateTimer = new DispatcherTimer();
         updateTimer.Interval = TimeSpan.FromMilliseconds(30);
