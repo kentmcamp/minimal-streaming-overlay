@@ -220,19 +220,22 @@ public partial class ValueAnalyzerWindow : Window
 
     // Event handlers for UI controls
 
-    private void PosterizeSlider_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void PosterizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        posterizeLevels = (byte)PosterizeSlider.Value;
+        if (!IsLoaded) return;
+
+        posterizeLevels = (byte)e.NewValue;
         PosterizeLevelText.Text = posterizeLevels.ToString();
         ProcessAndDisplay();
     }
 
-    private void BlackLevelSlider_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void BlackLevelSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        blackLevel = (byte)BlackLevelSlider.Value;
+        if (!IsLoaded) return;
+
+        blackLevel = (byte)e.NewValue;
         BlackLevelText.Text = blackLevel.ToString();
 
-        // Prevent invalid state where black >= white
         if (blackLevel >= whiteLevel)
         {
             whiteLevel = (byte)Math.Min(255, blackLevel + 1);
@@ -243,9 +246,11 @@ public partial class ValueAnalyzerWindow : Window
         ProcessAndDisplay();
     }
 
-    private void WhiteLevelSlider_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void WhiteLevelSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        whiteLevel = (byte)WhiteLevelSlider.Value;
+        if (!IsLoaded) return;
+
+        whiteLevel = (byte)e.NewValue;
         WhiteLevelText.Text = whiteLevel.ToString();
 
         // Prevent invalid state where black >= white
