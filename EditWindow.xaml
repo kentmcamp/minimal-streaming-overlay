@@ -22,10 +22,39 @@
                         <ComboBox x:Name="FontSizeCombo" Margin="0,0,0,15"/>
 
                         <TextBlock Text="Font Color" Margin="0,0,0,5" FontWeight="Bold"/>
-                        <ComboBox x:Name="FontColorCombo" Margin="0,0,0,15"/>
+                        <!-- <ComboBox x:Name="FontColorCombo" Margin="0,0,0,15"/> -->
+                        <ComboBox x:Name="FontColorCombo">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                        <Border Width="14"
+                                                Height="14"
+                                                Margin="0,0,6,0"
+                                                BorderBrush="Gray"
+                                                BorderThickness="1"
+                                                Background="{Binding}" />
+                                        <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
                         <TextBlock Text="Background Color" Margin="0,0,0,5" FontWeight="Bold"/>
-                        <ComboBox x:Name="BackgroundColorCombo" Margin="0,0,0,15"/>
+                        <ComboBox x:Name="BackgroundColorCombo">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                        <Border Width="14"
+                                                Height="14"
+                                                Margin="0,0,6,0"
+                                                BorderBrush="Gray"
+                                                BorderThickness="1"
+                                                Background="{Binding}" />
+                                        <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
                         <TextBlock Text="Background Opacity" Margin="0,0,0,5" FontWeight="Bold"/>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
@@ -47,7 +76,21 @@
                         <ComboBox x:Name="KeyFontSizeCombo" Margin="0,0,0,15"/>
 
                         <TextBlock Text="Font Color" Margin="0,0,0,5" FontWeight="Bold"/>
-                        <ComboBox x:Name="KeyFontColorCombo" Margin="0,0,0,15"/>
+                        <ComboBox x:Name="KeyFontColorCombo">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                        <Border Width="14"
+                                                Height="14"
+                                                Margin="0,0,6,0"
+                                                BorderBrush="Gray"
+                                                BorderThickness="1"
+                                                Background="{Binding}" />
+                                        <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
                         <TextBlock Text="Show Duration (sec)" Margin="0,0,0,5" FontWeight="Bold"/>
                         <TextBox x:Name="KeyShowBox" Margin="0,0,0,15"/>
