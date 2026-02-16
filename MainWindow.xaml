@@ -16,6 +16,7 @@
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Edit" Click="Edit_Click"/>
+                <MenuItem Header="Analyze Values" Click="AnalyzeValues_Click"/>
                 <Separator/>
                 <MenuItem Header="Start" Click="Start_Click"/>
                 <MenuItem Header="Pause" Click="Pause_Click"/>

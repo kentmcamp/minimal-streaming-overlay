@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows.Threading;
 using System.Windows.Media.Animation;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace minol;
 
@@ -301,6 +302,53 @@ public partial class MainWindow : Window
             Owner = this
         };
         dlg.ShowDialog();
+    }
+
+    private void AnalyzeValues_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            // Capture screenshot of the monitor containing this window
+            var screenshot = CaptureMonitorScreenshot();
+            if (screenshot != null)
+            {
+                // Open the analyzer window
+                var analyzer = new ValueAnalyzerWindow(screenshot)
+                {
+                    Owner = this
+                };
+                analyzer.Show();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error opening Analyze Values window: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private Bitmap CaptureMonitorScreenshot()
+    {
+        try
+        {
+            // Get the monitor containing this window
+            var screen = System.Windows.Forms.Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+
+            // Capture the full bounds of that monitor
+            var bounds = screen.Bounds;
+            var bitmap = new Bitmap(bounds.Width, bounds.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.CopyFromScreen(new System.Drawing.Point(bounds.X, bounds.Y), System.Drawing.Point.Empty, new System.Drawing.Size(bounds.Width, bounds.Height));
+            }
+
+            return bitmap;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Screenshot capture error: {ex.Message}");
+            return null;
+        }
     }
 
     public void ApplyOverlaySettings(System.Windows.Media.FontFamily fontFamily, double fontSize, System.Windows.Media.Color foregroundColor, System.Windows.Media.Color backgroundColor, double backgroundOpacity)
