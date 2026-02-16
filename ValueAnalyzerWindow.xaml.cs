@@ -11,7 +11,7 @@ public partial class ValueAnalyzerWindow : Window
 {
     private Bitmap? originalBitmap;
     private Bitmap? currentProcessedBitmap;
-    private byte posterizeLevels = 20;
+    private byte posterizeLevels = 8;
     private byte blackLevel = 0;
     private byte whiteLevel = 255;
     private bool flipHorizontal = false;
@@ -165,8 +165,10 @@ public partial class ValueAnalyzerWindow : Window
 
     /// <summary>
     /// Apply posterization to a single value.
+    /// Quantizes the value to one of N discrete levels.
     /// step = 255 / (levels - 1)
-    /// newValue = (value / step) * step
+    /// index = round(value / step)  // which level?
+    /// newValue = index * step       // that level's value
     /// </summary>
     private byte PosterizeValue(byte value, byte levels)
     {
@@ -174,7 +176,8 @@ public partial class ValueAnalyzerWindow : Window
             return 0;
 
         float step = 255f / (levels - 1);
-        byte quantized = (byte)(((float)value / step) * step);
+        float index = MathF.Round((float)value / step);
+        byte quantized = (byte)(index * step);
         return quantized;
     }
 
