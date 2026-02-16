@@ -14,7 +14,7 @@ public static class AppVersion
 
     public static string DisplayName => $"v{VersionString}";
 
-    public static string Status => "Release 1";
+    public static string Status => "Stable 1";
 
     public static string GetFullVersion() => $"{DisplayName} - {Status}";
 }
