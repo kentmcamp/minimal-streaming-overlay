@@ -4,33 +4,31 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 
 ## 💾 Installation
 
-1. **Download** the latest release: [minol.zip](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/1.0.1)
+1. **Download** the latest release: [minol113.7z](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/1.1.3)
 2. **Extract** the archive to desired location
 3. **Run** `minol.exe`
 
 *No installation required. The app works immediately out of the zip file.*
 
 ## 🆕 Recent Updates
-
+- v1.1.3 - 2026-02-26
+    - Fixed issue with greytone slider showing incorrect number on first starting the value viewer.
+    - Added 20+ new colors.
+    - Added previews for each color.
+    - Font names in the dropdown menus now display in their relevent font for preview purposes.
+    - Optimized the code for displaying font names in their own font family. 
 - v1.0.1 - 2026-02-16
     - Public release of **minol**
     - Patch: Fixed issue where the *Value Viewer* window moved erratically when dragging or resizing.
 
 ## 🚧 Planned Updates
 ### Fixes and Patches Planned
-- **Value Viewer Greytone Slider** - It starts at 8 but the sliders shows it starting at 255.
 - **Key Renaming** - Some non letter keys (like brackets, numbers, special charactrers) display unclear names or generic assigning like OEM6. These need to be mapped to clearer names.
-- **Change Edit to Settings** - The "Edit" option should say "Settings".
-  
-### Minor/Major Updates Planned
 - **Value Viewer Screenshot Select Crop** - When a user clicks the analyze value button, instead of just a screenshot, they can drag over an area of the desktop they want analyzed specifically.
 - **Edit Themes** - Right now themes can be edited only by entering the same name of a previously saved theme to overwrite it. Future updates should include an overwrite button directly in the menu.
 - **Double Click to Reset Timer** - Just like how single clicking on the app overlay pauses the timer, double-clicking can reset the timer to zero.
-- **Preview Font** - See each font name in the list using its own font family, so users can see what the font looks like before selecting.
 - **Choose Directory** - The user should be able to change the theme and saved configurations directory themselves
 - **Shortcut Click Options** - The option to click to pause/unpause and later, double click to reset the timer, should have options in the edit menu to enable/disable these features.
-
-### New Features Planned
 - **Color Picker** - A streamlined color picker option in the context menu.
 
 ## ✨ Features
