@@ -19,7 +19,6 @@ public partial class ValueAnalyzerWindow : Window
 
     // Drag and resize fields
     private System.Windows.Point dragStartPoint;
-    private bool isDragging = false;
     private bool isResizing = false;
     private ResizeDirection resizeDirection = ResizeDirection.None;
 
@@ -286,11 +285,11 @@ public partial class ValueAnalyzerWindow : Window
 
     private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        dragStartPoint = e.GetPosition(this);
+        System.Windows.Point windowRelativePoint = e.GetPosition(this);
 
         const int resizeBorder = 5;
-        double x = dragStartPoint.X;
-        double y = dragStartPoint.Y;
+        double x = windowRelativePoint.X;
+        double y = windowRelativePoint.Y;
 
         // Determine if we're clicking on a resize area
         if (y < resizeBorder)
@@ -299,6 +298,7 @@ public partial class ValueAnalyzerWindow : Window
             else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.TopRight;
             else resizeDirection = ResizeDirection.Top;
             isResizing = true;
+            dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
         }
         else if (y > this.ActualHeight - resizeBorder)
         {
@@ -306,36 +306,35 @@ public partial class ValueAnalyzerWindow : Window
             else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.BottomRight;
             else resizeDirection = ResizeDirection.Bottom;
             isResizing = true;
+            dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
         }
         else if (x < resizeBorder)
         {
             resizeDirection = ResizeDirection.Left;
             isResizing = true;
+            dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
         }
         else if (x > this.ActualWidth - resizeBorder)
         {
             resizeDirection = ResizeDirection.Right;
             isResizing = true;
+            dragStartPoint = e.GetPosition(null); // Use screen coordinates for resize
         }
-        else if (y < 32) // Click on title bar
+        else if (y < 32) // Click on title bar — use WPF's smooth DragMove
         {
-            isDragging = true;
-            this.CaptureMouse();
+            try
+            {
+                this.DragMove();
+            }
+            catch { }
         }
     }
 
     private void Window_MouseMove(object sender, MouseEventArgs e)
     {
-        if (isDragging)
+        if (isResizing)
         {
             System.Windows.Point currentPoint = e.GetPosition(null);
-            this.Left += currentPoint.X - dragStartPoint.X;
-            this.Top += currentPoint.Y - dragStartPoint.Y;
-            dragStartPoint = new System.Windows.Point(currentPoint.X, currentPoint.Y);
-        }
-        else if (isResizing)
-        {
-            System.Windows.Point currentPoint = e.GetPosition(this);
             double deltaX = currentPoint.X - dragStartPoint.X;
             double deltaY = currentPoint.Y - dragStartPoint.Y;
 
@@ -376,10 +375,12 @@ public partial class ValueAnalyzerWindow : Window
                     this.Width += deltaX;
                     break;
             }
+
+            dragStartPoint = currentPoint;
         }
         else
         {
-            // Update cursor based on position
+            // Update cursor based on position for resize feedback
             double x = e.GetPosition(this).X;
             double y = e.GetPosition(this).Y;
             const int resizeBorder = 5;
@@ -399,10 +400,8 @@ public partial class ValueAnalyzerWindow : Window
 
     private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
-        isDragging = false;
         isResizing = false;
         resizeDirection = ResizeDirection.None;
-        this.ReleaseMouseCapture();
     }
 
     protected override void OnClosed(EventArgs e)

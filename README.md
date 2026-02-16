@@ -4,7 +4,7 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 
 ## 📥 Installation
 
-1. **Download** the latest release: [minol225rc1.7z](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/2.2.5rc1)
+1. **Download** the latest release: [minol242rc2.7z](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/2.4.2rc2)
 2. **Extract** the archive to desired location
 3. **Run** `minol.exe`
 
@@ -15,6 +15,7 @@ No installation required. The app works immediately.
 ### Core Timer Features
 - ⏱️ **Timer** - Click to pause/resume
 - 🎹 **Keyboard input display** - Shows keys pressed including key combinations.
+- 🔲 **Value Viewer** - Screenshot analyzer with grayscale conversion and tonal (greytone) adjustments
 - 👁️ **Always-on-top overlay** - Stays visible above all windows.
 
 ### Appearance & Customization
@@ -24,10 +25,10 @@ No installation required. The app works immediately.
 
 ### Image Tonal Value Analysis
 - 🔍 **Analyze Tonal Values** - Displays a screenshot of the current display converted to grayscale. With options for the following live adjustments...
-  - **Gray Levels** - Adjustable posterization (2-20 levels)
-  - **Black/White levels** - Dynamic range remapping
-- 🔄 **Image transforms** - Flip horizontal/vertical
-- 🖱️ **Draggable & resizable** - Move and resize the analyzer window freely
+    - 🎚️ **Gray Levels** - Adjustable posterization (2-255 levels of greytone)
+    - 🎛️ **Black/White levels** - Dynamic range remapping
+    - 🔄 **Image transforms** - Flip horizontal/vertical
+    - 🖱️ **Draggable & resizable** - Move and resize the analyzer window freely
 
 ## 🎮 Usage
 
@@ -56,7 +57,7 @@ Settings are stored in: `%AppData%/minol/settings.json`
 
 ## 🛠️ System Requirements
 - Windows 10 or later
-- .NET 8 Runtime (bundle included in minol.exe)
+- .NET 8 Runtime
 - Display resolution: 1920x1080 or higher recommended
 
 ## 📝 License
