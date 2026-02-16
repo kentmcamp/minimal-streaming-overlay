@@ -17,7 +17,8 @@
         MouseMove="Window_MouseMove"
         MouseLeftButtonUp="Window_MouseLeftButtonUp">
 
-    <Border BorderBrush="#404040" BorderThickness="1">
+    <Border BorderBrush="#404040"
+            BorderThickness="1">
         <Grid Background="#1A1A1A">
             <Grid.RowDefinitions>
                 <RowDefinition Height="32"/>
@@ -25,14 +26,31 @@
             </Grid.RowDefinitions>
 
             <!-- Title Bar -->
-            <Border Grid.Row="0" Background="#1F1F1F" Padding="12,0,12,0" x:Name="TitleBar">
+            <Border Grid.Row="0"
+                    Background="#1F1F1F"
+                    Padding="12,0,12,0"
+                    x:Name="TitleBar">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Analyze Values" FontSize="12" FontWeight="Bold" Foreground="#E0E0E0" VerticalAlignment="Center"/>
-                    <Button Grid.Column="1" Content="✕" Click="Close_Click" Width="32" Height="32" Background="Transparent" Foreground="#FF6B6B" FontSize="14" Cursor="Hand" Padding="0"/>
+                    <TextBlock Grid.Column="0"
+                               Text="Analyze Values"
+                               FontSize="12"
+                               FontWeight="Bold"
+                               Foreground="#E0E0E0"
+                               VerticalAlignment="Center"/>
+                    <Button Grid.Column="1"
+                            Content="✕"
+                            Click="Close_Click"
+                            Width="32"
+                            Height="32"
+                            Background="Transparent"
+                            Foreground="#FF6B6B"
+                            FontSize="14"
+                            Cursor="Hand"
+                            Padding="0"/>
                 </Grid>
             </Border>
 
@@ -44,85 +62,177 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Main image display area -->
-                <Border Grid.Column="0" Background="#0F0F0F" Margin="8" CornerRadius="4">
-                    <Image x:Name="DisplayImage" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Grid.Column="0"
+                        Background="#0F0F0F"
+                        Margin="8"
+                        CornerRadius="4">
+                    <Image x:Name="DisplayImage"
+                           Stretch="Uniform"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
                 </Border>
 
                 <!-- Control panel -->
-                <Border Grid.Column="1" Background="#252525" Margin="0,8,8,8" CornerRadius="4" Padding="12">
+                <Border Grid.Column="1"
+                        Background="#252525"
+                        Margin="0,8,8,8"
+                        CornerRadius="4"
+                        Padding="12">
                     <StackPanel>
 
-                    <!-- Title -->
-                    <TextBlock Text="Image Processing" FontSize="14" FontWeight="Bold" Foreground="#E0E0E0" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                        <!-- Title -->
+                        <TextBlock Text="Image Processing"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Foreground="#E0E0E0"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,12"/>
 
-                    <Separator Background="#404040" Margin="0,0,0,12"/>
+                        <Separator Background="#404040"
+                                   Margin="0,0,0,12"/>
 
-                    <!-- Posterization -->
-                    <StackPanel Margin="0,0,0,12">
-                        <Grid Margin="0,0,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Gray Levels" FontSize="11" Foreground="#B0B0B0" Grid.Column="0"/>
-                            <TextBlock x:Name="PosterizeLevelText" Text="256" FontSize="11" Foreground="#90EE90" Grid.Column="2"/>
-                        </Grid>
-                        <Slider x:Name="PosterizeSlider" Minimum="2" Maximum="255" Value="8" IsSnapToTickEnabled="False"
-                                Background="#404040" Foreground="#90EE90" PreviewMouseLeftButtonUp="PosterizeSlider_PreviewMouseLeftButtonUp"/>
-                    </StackPanel>
+                        <!-- Posterization -->
+                        <StackPanel Margin="0,0,0,12">
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Gray Levels"
+                                           FontSize="11"
+                                           Foreground="#B0B0B0"
+                                           Grid.Column="0"/>
+                                <TextBlock x:Name="PosterizeLevelText"
+                                           Text="256"
+                                           FontSize="11"
+                                           Foreground="#90EE90"
+                                           Grid.Column="2"/>
+                            </Grid>
+                            <Slider x:Name="PosterizeSlider"
+                                    Minimum="2"
+                                    Maximum="255"
+                                    Value="8"
+                                    Background="#404040"
+                                    Foreground="#90EE90"
+                                    SmallChange="1"
+                                    LargeChange="10"
+                                    TickFrequency="5"
+                                    IsSnapToTickEnabled="False"
+                                    IsMoveToPointEnabled="True"
+                                    ValueChanged="PosterizeSlider_ValueChanged"/>
+                        </StackPanel>
 
-                    <Separator Background="#404040" Margin="0,0,0,12"/>
+                        <Separator Background="#404040"
+                                   Margin="0,0,0,12"/>
 
-                    <!-- Black Level -->
-                    <StackPanel Margin="0,0,0,12">
-                        <Grid Margin="0,0,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Black Level" FontSize="11" Foreground="#B0B0B0" Grid.Column="0"/>
-                            <TextBlock x:Name="BlackLevelText" Text="0" FontSize="11" Foreground="#90EE90" Grid.Column="2"/>
-                        </Grid>
-                        <Slider x:Name="BlackLevelSlider" Minimum="0" Maximum="254" Value="0"
-                                Background="#404040" Foreground="#90EE90" PreviewMouseLeftButtonUp="BlackLevelSlider_PreviewMouseLeftButtonUp"/>
-                    </StackPanel>
+                        <!-- Black Level -->
+                        <StackPanel Margin="0,0,0,12">
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Black Level"
+                                           FontSize="11"
+                                           Foreground="#B0B0B0"
+                                           Grid.Column="0"/>
+                                <TextBlock x:Name="BlackLevelText"
+                                           Text="0"
+                                           FontSize="11"
+                                           Foreground="#90EE90"
+                                           Grid.Column="2"/>
+                            </Grid>
+                            <Slider x:Name="BlackLevelSlider"
+                                    Minimum="0"
+                                    Maximum="254"
+                                    Value="0"
+                                    Background="#404040"
+                                    Foreground="#90EE90"
+                                    SmallChange="1"
+                                    LargeChange="10"
+                                    TickFrequency="5"
+                                    IsSnapToTickEnabled="False"
+                                    IsMoveToPointEnabled="True"
+                                    ValueChanged="BlackLevelSlider_ValueChanged"/>
+                        </StackPanel>
 
-                    <Separator Background="#404040" Margin="0,0,0,12"/>
+                        <Separator Background="#404040"
+                                   Margin="0,0,0,12"/>
 
-                    <!-- White Level -->
-                    <StackPanel Margin="0,0,0,12">
-                        <Grid Margin="0,0,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="White Level" FontSize="11" Foreground="#B0B0B0" Grid.Column="0"/>
-                            <TextBlock x:Name="WhiteLevelText" Text="255" FontSize="11" Foreground="#90EE90" Grid.Column="2"/>
-                        </Grid>
-                        <Slider x:Name="WhiteLevelSlider" Minimum="1" Maximum="255" Value="255"
-                                Background="#404040" Foreground="#90EE90" PreviewMouseLeftButtonUp="WhiteLevelSlider_PreviewMouseLeftButtonUp"/>
-                    </StackPanel>
+                        <!-- White Level -->
+                        <StackPanel Margin="0,0,0,12">
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="White Level"
+                                           FontSize="11"
+                                           Foreground="#B0B0B0"
+                                           Grid.Column="0"/>
+                                <TextBlock x:Name="WhiteLevelText"
+                                           Text="255"
+                                           FontSize="11"
+                                           Foreground="#90EE90"
+                                           Grid.Column="2"/>
+                            </Grid>
+                            <Slider x:Name="WhiteLevelSlider"
+                                    Minimum="1"
+                                    Maximum="255"
+                                    Value="255"
+                                    Background="#404040"
+                                    Foreground="#90EE90"
+                                    SmallChange="1"
+                                    LargeChange="10"
+                                    TickFrequency="5"
+                                    IsSnapToTickEnabled="False"
+                                    IsMoveToPointEnabled="True"
+                                    ValueChanged="WhiteLevelSlider_ValueChanged"/>
+                        </StackPanel>
 
-                    <Separator Background="#404040" Margin="0,0,0,12"/>
+                        <Separator Background="#404040"
+                                   Margin="0,0,0,12"/>
 
-                    <!-- Flip toggles -->
-                    <StackPanel Margin="0,0,0,12">
-                        <TextBlock Text="Transforms" FontSize="11" Foreground="#B0B0B0" Margin="0,0,0,6"/>
-                        <Button x:Name="FlipHorizontalButton" Content="Flip Horizontal" Click="FlipHorizontal_Click"
-                                Background="#404040" Foreground="#E0E0E0" Padding="8,6" Cursor="Hand" Margin="0,0,0,4"/>
-                        <Button x:Name="FlipVerticalButton" Content="Flip Vertical" Click="FlipVertical_Click"
-                                Background="#404040" Foreground="#E0E0E0" Padding="8,6" Cursor="Hand"/>
-                    </StackPanel>
+                        <!-- Flip toggles -->
+                        <StackPanel Margin="0,0,0,12">
+                            <TextBlock Text="Transforms"
+                                       FontSize="11"
+                                       Foreground="#B0B0B0"
+                                       Margin="0,0,0,6"/>
+                            <Button x:Name="FlipHorizontalButton"
+                                    Content="Flip Horizontal"
+                                    Click="FlipHorizontal_Click"
+                                    Background="#404040"
+                                    Foreground="#E0E0E0"
+                                    Padding="8,6"
+                                    Cursor="Hand"
+                                    Margin="0,0,0,4"/>
+                            <Button x:Name="FlipVerticalButton"
+                                    Content="Flip Vertical"
+                                    Click="FlipVertical_Click"
+                                    Background="#404040"
+                                    Foreground="#E0E0E0"
+                                    Padding="8,6"
+                                    Cursor="Hand"/>
+                        </StackPanel>
 
-                    <!-- Spacer -->
-                    <Grid Height="1" Background="#404040" Margin="0,0,0,12"/>
+                        <!-- Spacer -->
+                        <Grid Height="1"
+                              Background="#404040"
+                              Margin="0,0,0,12"/>
 
-                    <!-- Exit button -->
-                    <Button x:Name="ExitButton" Content="Exit" Click="Exit_Click"
-                            Background="#404040" Foreground="#FF6B6B" Padding="8,6" Cursor="Hand" FontWeight="Bold"/>
+                        <!-- Exit button -->
+                        <Button x:Name="ExitButton"
+                                Content="Exit"
+                                Click="Exit_Click"
+                                Background="#404040"
+                                Foreground="#FF6B6B"
+                                Padding="8,6"
+                                Cursor="Hand"
+                                FontWeight="Bold"/>
 
                     </StackPanel>
                 </Border>
