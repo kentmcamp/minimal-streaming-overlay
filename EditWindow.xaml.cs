@@ -130,30 +130,30 @@ public partial class EditWindow : Window
         };
     }
 
-private void KeyFontFamilyCombo_DropDownOpened(object sender, EventArgs e)
-{
-    if (fontsLoaded) return;
+    private void KeyFontFamilyCombo_DropDownOpened(object sender, EventArgs e)
+    {
+        if (fontsLoaded) return;
 
-    var families = Fonts.SystemFontFamilies
-        .OrderBy(f => f.Source)
-        .ToList();
+        var families = Fonts.SystemFontFamilies
+            .OrderBy(f => f.Source)
+            .ToList();
 
-    KeyFontFamilyCombo.ItemsSource = families;
+        KeyFontFamilyCombo.ItemsSource = families;
 
-    fontsLoaded = true;
-}
-private void FontFamilyCombo_DropDownOpened(object sender, EventArgs e)
-{
-    if (fontsLoaded) return;
+        fontsLoaded = true;
+    }
+    private void FontFamilyCombo_DropDownOpened(object sender, EventArgs e)
+    {
+        if (fontsLoaded) return;
 
-    var families = Fonts.SystemFontFamilies
-        .OrderBy(f => f.Source)
-        .ToList();
+        var families = Fonts.SystemFontFamilies
+            .OrderBy(f => f.Source)
+            .ToList();
 
-    KeyFontFamilyCombo.ItemsSource = families;
+        KeyFontFamilyCombo.ItemsSource = families;
 
-    fontsLoaded = true;
-}
+        fontsLoaded = true;
+    }
     private void UpdateCurrentThemeDisplay()
     {
         if (!string.IsNullOrWhiteSpace(currentlyLoadedThemeName))
@@ -214,25 +214,25 @@ private void FontFamilyCombo_DropDownOpened(object sender, EventArgs e)
     }
 
     private string? GetColorName(Color color)
-{
-    foreach (var colorName in AvailableColors)
     {
-        var namedColor = ParseColorFromName(colorName, Colors.Black);
-
-        if (namedColor.R == color.R &&
-            namedColor.G == color.G &&
-            namedColor.B == color.B)
+        foreach (var colorName in AvailableColors)
         {
-            return colorName;
-        }
-    }
+            var namedColor = ParseColorFromName(colorName, Colors.Black);
 
-    return null;
-}
+            if (namedColor.R == color.R &&
+                namedColor.G == color.G &&
+                namedColor.B == color.B)
+            {
+                return colorName;
+            }
+        }
+
+        return null;
+    }
     private AppSettings GetCurrentSettings()
     {
         var ff = FontFamilyCombo.SelectedItem as FontFamily ?? ownerWindow.TimerFontFamily;
-        var size = FontSizeCombo.SelectedItem is double d ? d : ownerWindow.TimerFontSize;
+        var size = GetComboBoxDouble(FontSizeCombo, ownerWindow.TimerFontSize);
         var fgName = FontColorCombo.SelectedItem as string ?? "Lime";
         var bgName = BackgroundColorCombo.SelectedItem as string ?? "Black";
         var fgColor = ParseColorFromName(fgName, Colors.Lime);
@@ -240,9 +240,11 @@ private void FontFamilyCombo_DropDownOpened(object sender, EventArgs e)
         var opacity = OpacitySlider.Value;
 
         var keyFontFamily = KeyFontFamilyCombo.SelectedItem as FontFamily ?? ownerWindow.KeyFontFamily;
-        double keyFont = KeyFontSizeCombo.SelectedItem is double kd ? kd : ownerWindow.KeyFontSize;
+        var keyFont = GetComboBoxDouble(KeyFontSizeCombo, ownerWindow.KeyFontSize);
         var keyFgName = KeyFontColorCombo.SelectedItem as string ?? "Lime";
         var keyFgColor = ParseColorFromName(keyFgName, Colors.Lime);
+
+
 
         if (!double.TryParse(KeyShowBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double showSec)) showSec = 1.2;
         if (!double.TryParse(KeyFadeBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double fadeSec)) fadeSec = 0.6;
@@ -403,6 +405,13 @@ private void FontFamilyCombo_DropDownOpened(object sender, EventArgs e)
         this.Close();
     }
 
+    double GetComboBoxDouble(ComboBox combo, double fallback)
+    {
+        if (combo.SelectedItem is double d) return d;
+        if (double.TryParse(combo.Text, out double typed)) return typed;
+        return fallback;
+    }
+
     private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
     {
         try
@@ -414,3 +423,4 @@ private void FontFamilyCombo_DropDownOpened(object sender, EventArgs e)
         ;
     }
 }
+
