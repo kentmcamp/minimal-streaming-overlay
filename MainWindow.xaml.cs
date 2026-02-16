@@ -91,7 +91,6 @@ public partial class MainWindow : Window
 
         LoadSettingsIntoVariables(settings);
         ApplyUISettings();
-        PositionWindow();
 
         stopwatch.Start();
 
@@ -104,7 +103,7 @@ public partial class MainWindow : Window
         this.MouseMove += Window_MouseMove;
         this.PreviewKeyDown += Window_PreviewKeyDown;
         this.PreviewKeyUp += Window_PreviewKeyUp;
-        this.Loaded += (s, e) => Keyboard.Focus(this);
+        this.Loaded += (s, e) => { PositionWindow(); Keyboard.Focus(this); };
 
         keyHideTimer.Tick += KeyHideTimer_Tick;
         chordDisplayTimer.Tick += ChordDisplayTimer_Tick;
@@ -421,6 +420,11 @@ public partial class MainWindow : Window
         var brush = new System.Windows.Media.SolidColorBrush(timerBackgroundColor);
         brush.Opacity = timerBackgroundOpacity;
         RootGrid.Background = brush;
+
+        // Apply key display styling
+        KeyText.FontFamily = keyFontFamily;
+        KeyText.FontSize = keyFontSize;
+        KeyText.Foreground = new System.Windows.Media.SolidColorBrush(keyForegroundColor);
     }
 
     private void SaveSettingsToFile()

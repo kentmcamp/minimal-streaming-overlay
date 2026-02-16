@@ -8,7 +8,7 @@ public static class AppVersion
     // Single-source version numbers
     public const int Major = 1;
     public const int Minor = 0;
-    public const int Patch = 1;
+    public const int Patch = 2;
     public const string PreReleaseLabel = "beta";
 
 
@@ -19,7 +19,7 @@ public static class AppVersion
 
     public static string DisplayName => $"v{VersionString}";
 
-    public static string Status => Major == 0 ? "Pre-release" : "Stable Release";
+    public static string Status => "Pre-release";
 
     public static string GetFullVersion() => $"{DisplayName} - {Status}";
 }
