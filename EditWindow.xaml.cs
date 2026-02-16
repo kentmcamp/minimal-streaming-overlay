@@ -40,6 +40,9 @@ public partial class EditWindow : Window
         // Opacity value display
         OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
         OpacitySlider.ValueChanged += (s, e) => OpacityValue.Text = ((int)(OpacitySlider.Value * 100)).ToString() + "%";
+
+        // Set version text in About tab
+        AboutVersionText.Text = AppVersion.DisplayName;
     }
 
     private void InitializeSettingsFromOwner()
@@ -353,9 +356,13 @@ public partial class EditWindow : Window
         this.Close();
     }
 
-    private void About_Click(object sender, RoutedEventArgs e)
+    private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
     {
-        var about = new AboutWindow() { Owner = this };
-        about.ShowDialog();
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
+        }
+        catch { };
     }
 }

@@ -101,7 +101,12 @@ public partial class MainWindow : Window
         this.MouseLeftButtonDown += Window_MouseLeftButtonDown;
         this.MouseLeftButtonUp += Window_MouseLeftButtonUp;
         this.MouseMove += Window_MouseMove;
-        this.Loaded += (s, e) => { PositionWindow(); Keyboard.Focus(this); };
+        this.Loaded += (s, e) => {
+            this.UpdateLayout();
+            // Delay positioning to ensure content width is fully calculated
+            this.Dispatcher.BeginInvoke(new Action(() => PositionWindow()), System.Windows.Threading.DispatcherPriority.Render);
+            Keyboard.Focus(this);
+        };
 
         keyHideTimer.Tick += KeyHideTimer_Tick;
         chordDisplayTimer.Tick += ChordDisplayTimer_Tick;
@@ -411,23 +416,35 @@ public partial class MainWindow : Window
     {
         var workingArea = System.Windows.SystemParameters.WorkArea;
 
+        // Force measurement of content if not yet available
+        double width = this.ActualWidth;
+        double height = this.ActualHeight;
+
+        if (width <= 0 || height <= 0)
+        {
+            // Manually measure the root grid to get desired size
+            RootGrid.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
+            width = RootGrid.DesiredSize.Width;
+            height = RootGrid.DesiredSize.Height;
+        }
+
         // Position based on anchor corner
         switch (windowAnchor)
         {
             case WindowAnchor.BottomLeft:
                 this.Left = workingArea.Left + windowMarginLeft;
-                this.Top = workingArea.Bottom - this.Height - windowMarginBottom;
+                this.Top = workingArea.Bottom - height - windowMarginBottom;
                 break;
             case WindowAnchor.BottomRight:
-                this.Left = workingArea.Right - this.Width - windowMarginLeft;
-                this.Top = workingArea.Bottom - this.Height - windowMarginBottom;
+                this.Left = workingArea.Right - width - windowMarginLeft;
+                this.Top = workingArea.Bottom - height - windowMarginBottom;
                 break;
             case WindowAnchor.TopLeft:
                 this.Left = workingArea.Left + windowMarginLeft;
                 this.Top = workingArea.Top + windowMarginBottom;
                 break;
             case WindowAnchor.TopRight:
-                this.Left = workingArea.Right - this.Width - windowMarginLeft;
+                this.Left = workingArea.Right - width - windowMarginLeft;
                 this.Top = workingArea.Top + windowMarginBottom;
                 break;
         }

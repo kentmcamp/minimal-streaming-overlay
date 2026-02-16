@@ -5,7 +5,6 @@
     <DockPanel>
         <!-- Bottom button bar -->
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,10,10,10">
-            <Button Content="About" Width="70" Margin="0,0,8,0" Click="About_Click"/>
             <Button x:Name="ApplyButton" Content="Apply" Width="70" Margin="0,0,8,0" Click="ApplyButton_Click"/>
             <Button Content="Close" Width="70" Click="CloseButton_Click"/>
         </StackPanel>
@@ -120,6 +119,73 @@
                             <Button Content="Load Selected Theme" Width="150" Margin="0,0,8,0" Click="LoadSelectedTheme_Click"/>
                             <Button Content="Delete Selected" Width="120" Click="DeleteSelectedTheme_Click"/>
                         </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- About Tab -->
+            <TabItem Header="About" Padding="10,5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <Image Source="pack://application:,,,/mIcon.ico" Width="48" Height="48" Margin="0,0,15,0" VerticalAlignment="Top"/>
+                            <StackPanel VerticalAlignment="Top">
+                                <TextBlock Text="minol"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#333"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock x:Name="AboutVersionText"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           Foreground="#0066CC"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <TextBlock Text="Streaming Overlay with Timer and Keyboard Input Display"
+                                   FontSize="12"
+                                   Foreground="#666"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,20"/>
+
+                        <Separator Margin="0,0,0,15"/>
+
+                        <TextBlock Text="About"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Foreground="#333"
+                                   Margin="0,0,0,10"/>
+
+                        <TextBlock Text="minol is a lightweight, always-on-top Windows overlay designed for streamers and content creators. Perfect for showcasing real-time input and elapsed time during gameplay, speedruns, or any live performance."
+                                   FontSize="11"
+                                   Foreground="#666"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,15"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Creator:" FontSize="11" FontWeight="SemiBold" Foreground="#333" Width="70"/>
+                            <TextBlock Text="Kent" FontSize="11" Foreground="#666"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Release:" FontSize="11" FontWeight="SemiBold" Foreground="#333" Width="70"/>
+                            <TextBlock Text="February 2026" FontSize="11" Foreground="#666"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <TextBlock Text="Source:" FontSize="11" FontWeight="SemiBold" Foreground="#333" Width="70"/>
+                            <TextBlock FontSize="11">
+                                <Hyperlink NavigateUri="https://github.com/kentmcamp/minimal-streaming-overlay"
+                                           RequestNavigate="Hyperlink_RequestNavigate"
+                                           Foreground="#0066CC">
+                                    GitHub Repository
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <TextBlock Text="© 2026 Kent. All rights reserved."
+                                   FontSize="10"
+                                   Foreground="#999"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
