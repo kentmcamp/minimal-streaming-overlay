@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace minol;
 
@@ -17,6 +18,8 @@ public partial class ValueAnalyzerWindow : Window
     private bool flipHorizontal = false;
     private bool flipVertical = false;
 
+    private DispatcherTimer? updateTimer;
+
     // Drag and resize fields
     private System.Windows.Point dragStartPoint;
     private bool isResizing = false;
@@ -27,6 +30,14 @@ public partial class ValueAnalyzerWindow : Window
     public ValueAnalyzerWindow(Bitmap? screenshot)
     {
         InitializeComponent();
+
+        updateTimer = new DispatcherTimer();
+        updateTimer.Interval = TimeSpan.FromMilliseconds(30);
+        updateTimer.Tick += (s, e) =>
+        {
+            updateTimer.Stop();
+            ProcessAndDisplay();
+        };
 
         if (screenshot == null)
         {
@@ -43,6 +54,9 @@ public partial class ValueAnalyzerWindow : Window
         {
             CenterWindowOnMonitor();
             ProcessAndDisplay();
+            // updateTimer?.Stop();
+            // updateTimer?.Start();
+
         };
     }
 
@@ -226,7 +240,9 @@ public partial class ValueAnalyzerWindow : Window
 
         posterizeLevels = (byte)e.NewValue;
         PosterizeLevelText.Text = posterizeLevels.ToString();
-        ProcessAndDisplay();
+        // ProcessAndDisplay();
+        updateTimer?.Stop();
+        updateTimer?.Start();
     }
 
     private void BlackLevelSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -243,7 +259,9 @@ public partial class ValueAnalyzerWindow : Window
             WhiteLevelText.Text = whiteLevel.ToString();
         }
 
-        ProcessAndDisplay();
+        // ProcessAndDisplay();
+        updateTimer?.Stop();
+        updateTimer?.Start();
     }
 
     private void WhiteLevelSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -261,21 +279,27 @@ public partial class ValueAnalyzerWindow : Window
             BlackLevelText.Text = blackLevel.ToString();
         }
 
-        ProcessAndDisplay();
+        // ProcessAndDisplay();
+        updateTimer?.Stop();
+        updateTimer?.Start();
     }
 
     private void FlipHorizontal_Click(object sender, RoutedEventArgs e)
     {
         flipHorizontal = !flipHorizontal;
         FlipHorizontalButton.Background = flipHorizontal ? System.Windows.Media.Brushes.DarkGreen : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(64, 64, 64));
-        ProcessAndDisplay();
+        // ProcessAndDisplay();
+        updateTimer?.Stop();
+        updateTimer?.Start();
     }
 
     private void FlipVertical_Click(object sender, RoutedEventArgs e)
     {
         flipVertical = !flipVertical;
         FlipVerticalButton.Background = flipVertical ? System.Windows.Media.Brushes.DarkGreen : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(64, 64, 64));
-        ProcessAndDisplay();
+        // ProcessAndDisplay();
+        updateTimer?.Stop();
+        updateTimer?.Start();
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e)

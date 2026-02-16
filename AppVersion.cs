@@ -8,7 +8,7 @@ public static class AppVersion
     // Single-source version numbers
     public const int Major = 2;
     public const int Minor = 4;
-    public const int Patch = 2;
+    public const int Patch = 3;
     public const string PreReleaseLabel = "rc";
 
 
