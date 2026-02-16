@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 
 namespace minol;
 
@@ -15,6 +16,14 @@ public partial class ValueAnalyzerWindow : Window
     private byte whiteLevel = 255;
     private bool flipHorizontal = false;
     private bool flipVertical = false;
+
+    // Drag and resize fields
+    private System.Windows.Point dragStartPoint;
+    private bool isDragging = false;
+    private bool isResizing = false;
+    private ResizeDirection resizeDirection = ResizeDirection.None;
+
+    private enum ResizeDirection { None, TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight }
 
     public ValueAnalyzerWindow(Bitmap? screenshot)
     {
@@ -265,6 +274,132 @@ public partial class ValueAnalyzerWindow : Window
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
         this.Close();
+    }
+
+    private void Close_Click(object sender, RoutedEventArgs e)
+    {
+        this.Close();
+    }
+
+    private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        dragStartPoint = e.GetPosition(this);
+
+        const int resizeBorder = 5;
+        double x = dragStartPoint.X;
+        double y = dragStartPoint.Y;
+
+        // Determine if we're clicking on a resize area
+        if (y < resizeBorder)
+        {
+            if (x < resizeBorder) resizeDirection = ResizeDirection.TopLeft;
+            else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.TopRight;
+            else resizeDirection = ResizeDirection.Top;
+            isResizing = true;
+        }
+        else if (y > this.ActualHeight - resizeBorder)
+        {
+            if (x < resizeBorder) resizeDirection = ResizeDirection.BottomLeft;
+            else if (x > this.ActualWidth - resizeBorder) resizeDirection = ResizeDirection.BottomRight;
+            else resizeDirection = ResizeDirection.Bottom;
+            isResizing = true;
+        }
+        else if (x < resizeBorder)
+        {
+            resizeDirection = ResizeDirection.Left;
+            isResizing = true;
+        }
+        else if (x > this.ActualWidth - resizeBorder)
+        {
+            resizeDirection = ResizeDirection.Right;
+            isResizing = true;
+        }
+        else if (y < 32) // Click on title bar
+        {
+            isDragging = true;
+            this.CaptureMouse();
+        }
+    }
+
+    private void Window_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (isDragging)
+        {
+            System.Windows.Point currentPoint = e.GetPosition(null);
+            this.Left += currentPoint.X - dragStartPoint.X;
+            this.Top += currentPoint.Y - dragStartPoint.Y;
+            dragStartPoint = new System.Windows.Point(currentPoint.X, currentPoint.Y);
+        }
+        else if (isResizing)
+        {
+            System.Windows.Point currentPoint = e.GetPosition(this);
+            double deltaX = currentPoint.X - dragStartPoint.X;
+            double deltaY = currentPoint.Y - dragStartPoint.Y;
+
+            switch (resizeDirection)
+            {
+                case ResizeDirection.Top:
+                    this.Top += deltaY;
+                    this.Height -= deltaY;
+                    break;
+                case ResizeDirection.Bottom:
+                    this.Height += deltaY;
+                    break;
+                case ResizeDirection.Left:
+                    this.Left += deltaX;
+                    this.Width -= deltaX;
+                    break;
+                case ResizeDirection.Right:
+                    this.Width += deltaX;
+                    break;
+                case ResizeDirection.TopLeft:
+                    this.Top += deltaY;
+                    this.Height -= deltaY;
+                    this.Left += deltaX;
+                    this.Width -= deltaX;
+                    break;
+                case ResizeDirection.TopRight:
+                    this.Top += deltaY;
+                    this.Height -= deltaY;
+                    this.Width += deltaX;
+                    break;
+                case ResizeDirection.BottomLeft:
+                    this.Height += deltaY;
+                    this.Left += deltaX;
+                    this.Width -= deltaX;
+                    break;
+                case ResizeDirection.BottomRight:
+                    this.Height += deltaY;
+                    this.Width += deltaX;
+                    break;
+            }
+        }
+        else
+        {
+            // Update cursor based on position
+            double x = e.GetPosition(this).X;
+            double y = e.GetPosition(this).Y;
+            const int resizeBorder = 5;
+
+            if ((y < resizeBorder && x < resizeBorder) || (y > this.ActualHeight - resizeBorder && x > this.ActualWidth - resizeBorder))
+                this.Cursor = Cursors.SizeNWSE;
+            else if ((y < resizeBorder && x > this.ActualWidth - resizeBorder) || (y > this.ActualHeight - resizeBorder && x < resizeBorder))
+                this.Cursor = Cursors.SizeNESW;
+            else if (y < resizeBorder || y > this.ActualHeight - resizeBorder)
+                this.Cursor = Cursors.SizeNS;
+            else if (x < resizeBorder || x > this.ActualWidth - resizeBorder)
+                this.Cursor = Cursors.SizeWE;
+            else
+                this.Cursor = Cursors.Arrow;
+        }
+    }
+
+    private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        isDragging = false;
+        isResizing = false;
+        resizeDirection = ResizeDirection.None;
+        this.ReleaseMouseCapture();
     }
 
     protected override void OnClosed(EventArgs e)
