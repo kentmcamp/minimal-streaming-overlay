@@ -4,22 +4,17 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 
 ## 💾 Installation
 
-1. **Download** the latest release: [minol113.7z](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/1.1.3)
+1. **Download** the latest release: [minol113.7z](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/1.2.6)
 2. **Extract** the archive to desired location
 3. **Run** `minol.exe`
 
 *No installation required. The app works immediately out of the zip file.*
 
 ## 🆕 Recent Updates
-- v1.1.3 - 2026-02-26
-    - Fixed issue with greytone slider showing incorrect number on first starting the value viewer.
-    - Added 20+ new colors.
-    - Added previews for each color.
-    - Font names in the dropdown menus now display in their relevent font for preview purposes.
-    - Optimized the code for displaying font names in their own font family. 
-- v1.0.1 - 2026-02-16
-    - Public release of **minol**
-    - Patch: Fixed issue where the *Value Viewer* window moved erratically when dragging or resizing.
+- v1.2.6 Stable Release
+    - Added countdown function
+    - Added icons to context menu
+    - Remapped numbers and misc. special characters- 
 
 ## 🚧 Planned Updates
 ### Fixes and Patches Planned
