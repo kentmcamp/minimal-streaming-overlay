@@ -353,16 +353,40 @@ public partial class MainWindow : Window
     private string KeyToDisplayString(System.Windows.Input.Key k)
     {
         // normalize special keys
-        switch (k)
-        {
-            case System.Windows.Input.Key.Return: return "Enter";
-            case System.Windows.Input.Key.Escape: return "Esc";
-            case System.Windows.Input.Key.Space: return "Space";
-            case System.Windows.Input.Key.OemPlus: return "+";
-            case System.Windows.Input.Key.OemMinus: return "-";
-            default:
-                return k.ToString();
-        }
+        // Numbers
+    if (k >= Key.D0 && k <= Key.D9)
+        return ((int)(k - Key.D0)).ToString();
+
+    // Numpad numbers
+    if (k >= Key.NumPad0 && k <= Key.NumPad9)
+        return ((int)(k - Key.NumPad0)).ToString();
+
+    // Letters
+    if (k >= Key.A && k <= Key.Z)
+        return k.ToString();
+
+    // Special keys
+    switch (k)
+    {
+        case Key.Return: return "Enter";
+        case Key.Escape: return "Esc";
+        case Key.Space: return "Space";
+        case Key.OemPlus: return "+";
+        case Key.OemMinus: return "-";
+        case Key.OemOpenBrackets: return "[";
+        case Key.Oem6: return "]";
+        case Key.Oem1: return ";";
+        case Key.OemQuotes: return "'";
+        case Key.Oem5: return "\\";
+        case Key.OemComma: return ",";
+        case Key.OemPeriod: return ".";
+        case Key.OemQuestion: return "/";
+        case Key.OemTilde: return "`";
+        case Key.Capital: return "CapsLock";
+        case Key.Tab: return "Tab";
+        case Key.Back: return "Backspace";
+        default: return k.ToString(); // fallback
+    }
     }
 
     private void ShowKey(string text)
