@@ -23,13 +23,9 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 
 ## 🚧 Planned Updates
 ### Fixes and Patches Planned
-- **Key Renaming** - Some non letter keys (like brackets, numbers, special charactrers) display unclear names or generic assigning like OEM6. These need to be mapped to clearer names.
 - **Value Viewer Screenshot Select Crop** - When a user clicks the analyze value button, instead of just a screenshot, they can drag over an area of the desktop they want analyzed specifically.
-- **Countdown** - Right click, choose "Countdown", and enter or select a time for the timer to count down from. The text flashes when it reaches it zero.
 - **Edit Themes** - Right now themes can be edited only by entering the same name of a previously saved theme to overwrite it. Future updates should include an overwrite button directly in the menu.
-- **Double Click to Reset Timer** - Just like how single clicking on the app overlay pauses the timer, double-clicking can reset the timer to zero.
 - **Choose Directory** - The user should be able to change the theme and saved configurations directory themselves
-- **Shortcut Click Options** - The option to click to pause/unpause and later, double click to reset the timer, should have options in the edit menu to enable/disable these features.
 
 ## ✨ Features
 
