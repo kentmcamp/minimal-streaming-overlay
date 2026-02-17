@@ -14,17 +14,54 @@
         >
     <Grid x:Name="RootGrid" Background="#1A000000">
         <Grid.ContextMenu>
-            <ContextMenu>
-                <MenuItem Header="Edit" Click="Edit_Click"/>
-                <MenuItem Header="Analyze Values" Click="AnalyzeValues_Click"/>
-                <Separator/>
-                <MenuItem Header="Start" Click="Start_Click"/>
-                <MenuItem Header="Pause" Click="Pause_Click"/>
-                <MenuItem Header="Reset" Click="Reset_Click"/>
-                <Separator/>
-                <MenuItem Header="Exit App" Click="Exit_Click"/>
-            </ContextMenu>
-        </Grid.ContextMenu>
+    <ContextMenu>
+        <MenuItem Header="Edit" Click="Edit_Click">
+            <MenuItem.Icon>
+                <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets"/>
+            </MenuItem.Icon>
+        </MenuItem>
+
+        <MenuItem Header="Analyze Values" Click="AnalyzeValues_Click">
+            <MenuItem.Icon>
+                <TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets"/>
+            </MenuItem.Icon>
+        </MenuItem>
+
+        <MenuItem Header="Countdown" Click="Countdown_Click">
+            <MenuItem.Icon>
+                <TextBlock Text="&#xED5A;" FontFamily="Segoe MDL2 Assets"/>
+            </MenuItem.Icon>
+        </MenuItem>
+
+        <Separator/>
+
+        <MenuItem Header="Start" Click="Start_Click">
+            <MenuItem.Icon>
+                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"/>
+            </MenuItem.Icon>
+        </MenuItem>
+
+        <MenuItem Header="Pause" Click="Pause_Click">
+            <MenuItem.Icon>
+                <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets"/>
+            </MenuItem.Icon>
+        </MenuItem>
+
+        <MenuItem Header="Reset" Click="Reset_Click">
+            <MenuItem.Icon>
+                <TextBlock Text="&#xE777;" FontFamily="Segoe MDL2 Assets"/>
+            </MenuItem.Icon>
+        </MenuItem>
+
+        <Separator/>
+
+        <MenuItem Header="Exit App" Click="Exit_Click">
+            <MenuItem.Icon>
+                <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets"/>
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+</Grid.ContextMenu>
 
         <Border Padding="12" CornerRadius="8">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Background="Transparent">

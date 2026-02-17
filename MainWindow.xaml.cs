@@ -72,6 +72,15 @@ public partial class MainWindow : Window
     public double WindowMarginLeft => windowMarginLeft;
     public double WindowMarginBottom => windowMarginBottom;
 
+    // For implementing countdown logic into stopwatch logic
+    private enum TimerMode { CountUp, CountDown }
+    private TimerMode currentTimerMode = TimerMode.CountUp;
+    private TimeSpan countdownTime = TimeSpan.Zero;  // only used for countdown
+
+    // For countdown finished flashing
+    private bool flashStarted = false;
+
+
     public MainWindow()
     {
         InitializeComponent();
@@ -103,7 +112,8 @@ public partial class MainWindow : Window
         this.MouseLeftButtonDown += Window_MouseLeftButtonDown;
         this.MouseLeftButtonUp += Window_MouseLeftButtonUp;
         this.MouseMove += Window_MouseMove;
-        this.Loaded += (s, e) => {
+        this.Loaded += (s, e) =>
+        {
             this.UpdateLayout();
             // Delay positioning to ensure content width is fully calculated
             this.Dispatcher.BeginInvoke(new Action(() => PositionWindow()), System.Windows.Threading.DispatcherPriority.Render);
@@ -122,8 +132,60 @@ public partial class MainWindow : Window
 
     private void Timer_Tick(object sender, EventArgs e)
     {
+        if (currentTimerMode == TimerMode.CountUp)
+    {
         TimeText.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
     }
+    else if (currentTimerMode == TimerMode.CountDown)
+    {
+        var remaining = countdownTime - stopwatch.Elapsed;
+        if (remaining <= TimeSpan.Zero)
+        {
+            remaining = TimeSpan.Zero;
+            TimeText.Text = remaining.ToString(@"hh\:mm\:ss");
+
+            if (!flashStarted)
+            {
+                flashStarted = true;
+                stopwatch.Stop();
+                FlashCountdownFinished();
+
+                // Optional: auto-switch back to count-up after 5 seconds
+                var resetTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+                resetTimer.Tick += (s, ev) =>
+                {
+                    resetTimer.Stop();
+                    currentTimerMode = TimerMode.CountUp;
+                    stopwatch.Reset();
+                    flashStarted = false;
+                    TimeText.Foreground = new SolidColorBrush(timerForegroundColor); // restore original color
+                };
+                resetTimer.Start();
+            }
+        }
+        else
+        {
+            TimeText.Text = remaining.ToString(@"hh\:mm\:ss");
+        }
+    }
+    }
+
+    private void Countdown_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new CountdownWindow
+        {
+            Owner = this
+        };
+
+        if (dlg.ShowDialog() == true)
+        {
+            countdownTime = dlg.SelectedTime;
+            currentTimerMode = TimerMode.CountDown;
+            stopwatch.Reset();
+            stopwatch.Start();
+        }
+    }
+
 
     private void Window_MouseLeftButtonDown(object? sender, MouseButtonEventArgs e)
     {
@@ -163,8 +225,33 @@ public partial class MainWindow : Window
         }
     }
 
+    private void FlashCountdownFinished()
+    {
+        var flashAnimation = new System.Windows.Media.Animation.ColorAnimation
+        {
+            From = System.Windows.Media.Colors.Red,
+            To = timerForegroundColor, // original color
+            Duration = TimeSpan.FromSeconds(0.5),
+            AutoReverse = true,
+            RepeatBehavior = new System.Windows.Media.Animation.RepeatBehavior(5) // 5 seconds
+        };
+
+        var brush = new SolidColorBrush(timerForegroundColor);
+        TimeText.Foreground = brush;
+        brush.BeginAnimation(SolidColorBrush.ColorProperty, flashAnimation);
+    }
+
     private void TogglePause()
     {
+        if (currentTimerMode == TimerMode.CountDown && stopwatch.Elapsed >= countdownTime)
+        {
+            // Countdown finished, switch back to count-up
+            currentTimerMode = TimerMode.CountUp;
+            stopwatch.Reset();
+            flashStarted = false;
+            TimeText.Foreground = new SolidColorBrush(timerForegroundColor);
+        }
+
         if (stopwatch.IsRunning)
             stopwatch.Stop();
         else
@@ -181,46 +268,46 @@ public partial class MainWindow : Window
     }
 
     private void UpdateKeyDisplay()
-{
-    var parts = new List<string>();
-
-    // Add modifiers from keysDown directly
-    if (keysDown.Contains(Key.LeftCtrl) || keysDown.Contains(Key.RightCtrl))
-        parts.Add("Ctrl");
-
-    if (keysDown.Contains(Key.LeftAlt) || keysDown.Contains(Key.RightAlt))
-        parts.Add("Alt");
-
-    if (keysDown.Contains(Key.LeftShift) || keysDown.Contains(Key.RightShift))
-        parts.Add("Shift");
-
-    if (keysDown.Contains(Key.LWin) || keysDown.Contains(Key.RWin))
-        parts.Add("Win");
-
-    // Add non-modifier keys
-    var mainKeys = keysDown
-        .Where(k => !IsModifierKey(k))
-        .Select(k => KeyToDisplayString(k))
-        .ToList();
-
-    parts.AddRange(mainKeys);
-
-    if (parts.Count == 0)
     {
-        KeyText.Text = string.Empty;
-    }
-    else
-    {
-        KeyText.Text = string.Join("+", parts);
-        KeyText.FontSize = keyFontSize;
-        KeyText.FontFamily = keyFontFamily;
-        KeyText.Foreground = new SolidColorBrush(keyForegroundColor);
+        var parts = new List<string>();
 
-        KeyText.BeginAnimation(UIElement.OpacityProperty, null);
-        KeyText.Opacity = 1.0;
-        keyHideTimer.Stop();
+        // Add modifiers from keysDown directly
+        if (keysDown.Contains(Key.LeftCtrl) || keysDown.Contains(Key.RightCtrl))
+            parts.Add("Ctrl");
+
+        if (keysDown.Contains(Key.LeftAlt) || keysDown.Contains(Key.RightAlt))
+            parts.Add("Alt");
+
+        if (keysDown.Contains(Key.LeftShift) || keysDown.Contains(Key.RightShift))
+            parts.Add("Shift");
+
+        if (keysDown.Contains(Key.LWin) || keysDown.Contains(Key.RWin))
+            parts.Add("Win");
+
+        // Add non-modifier keys
+        var mainKeys = keysDown
+            .Where(k => !IsModifierKey(k))
+            .Select(k => KeyToDisplayString(k))
+            .ToList();
+
+        parts.AddRange(mainKeys);
+
+        if (parts.Count == 0)
+        {
+            KeyText.Text = string.Empty;
+        }
+        else
+        {
+            KeyText.Text = string.Join("+", parts);
+            KeyText.FontSize = keyFontSize;
+            KeyText.FontFamily = keyFontFamily;
+            KeyText.Foreground = new SolidColorBrush(keyForegroundColor);
+
+            KeyText.BeginAnimation(UIElement.OpacityProperty, null);
+            KeyText.Opacity = 1.0;
+            keyHideTimer.Stop();
+        }
     }
-}
 
 
     // private void UpdateKeyDisplay()
@@ -266,16 +353,40 @@ public partial class MainWindow : Window
     private string KeyToDisplayString(System.Windows.Input.Key k)
     {
         // normalize special keys
-        switch (k)
-        {
-            case System.Windows.Input.Key.Return: return "Enter";
-            case System.Windows.Input.Key.Escape: return "Esc";
-            case System.Windows.Input.Key.Space: return "Space";
-            case System.Windows.Input.Key.OemPlus: return "+";
-            case System.Windows.Input.Key.OemMinus: return "-";
-            default:
-                return k.ToString();
-        }
+        // Numbers
+    if (k >= Key.D0 && k <= Key.D9)
+        return ((int)(k - Key.D0)).ToString();
+
+    // Numpad numbers
+    if (k >= Key.NumPad0 && k <= Key.NumPad9)
+        return ((int)(k - Key.NumPad0)).ToString();
+
+    // Letters
+    if (k >= Key.A && k <= Key.Z)
+        return k.ToString();
+
+    // Special keys
+    switch (k)
+    {
+        case Key.Return: return "Enter";
+        case Key.Escape: return "Esc";
+        case Key.Space: return "Space";
+        case Key.OemPlus: return "+";
+        case Key.OemMinus: return "-";
+        case Key.OemOpenBrackets: return "[";
+        case Key.Oem6: return "]";
+        case Key.Oem1: return ";";
+        case Key.OemQuotes: return "'";
+        case Key.Oem5: return "\\";
+        case Key.OemComma: return ",";
+        case Key.OemPeriod: return ".";
+        case Key.OemQuestion: return "/";
+        case Key.OemTilde: return "`";
+        case Key.Capital: return "CapsLock";
+        case Key.Tab: return "Tab";
+        case Key.Back: return "Backspace";
+        default: return k.ToString(); // fallback
+    }
     }
 
     private void ShowKey(string text)
@@ -331,7 +442,10 @@ public partial class MainWindow : Window
     private void Reset_Click(object sender, RoutedEventArgs e)
     {
         stopwatch.Reset();
-        TimeText.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
+        if (currentTimerMode == TimerMode.CountUp)
+            TimeText.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
+        else
+            TimeText.Text = countdownTime.ToString(@"hh\:mm\:ss");
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e)
