@@ -170,6 +170,15 @@ public partial class MainWindow : Window
     }
     }
 
+private void ColorPicker_Click(object sender, RoutedEventArgs e)
+{
+    var picker = new ColorPickerWindow()
+    {
+        Owner = this
+    };
+
+    picker.ShowDialog();
+}
     private void Countdown_Click(object sender, RoutedEventArgs e)
     {
         var dlg = new CountdownWindow

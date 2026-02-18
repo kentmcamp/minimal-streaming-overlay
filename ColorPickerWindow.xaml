@@ -1,0 +1,51 @@
+<Window x:Class="minol.ColorPickerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="#01000000"
+        Topmost="True"
+        WindowState="Maximized"
+        ShowInTaskbar="False"
+        PreviewMouseDown="Window_PreviewMouseDown"
+        >
+
+    <Grid>
+
+        <Border Background="#DD1A1A1A"
+                CornerRadius="8"
+                Padding="16"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="320">
+
+            <StackPanel>
+
+                <TextBlock Text="Click anywhere to pick a color"
+                           Margin="0,0,0,12"
+                           Foreground="White"
+                           TextAlignment="Center"/>
+
+                <Border x:Name="ColorPreview"
+                        Height="60"
+                        Margin="0,0,0,12"
+                        CornerRadius="4"/>
+
+                <TextBlock x:Name="HexText" Foreground="White"/>
+                <TextBlock x:Name="RgbText" Foreground="White"/>
+                <TextBlock x:Name="CmykText" Foreground="White"/>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,12,0,0">
+
+                    <Button Content="Exit"
+                            Margin="4"
+                            Click="Exit_Click"/>
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>
