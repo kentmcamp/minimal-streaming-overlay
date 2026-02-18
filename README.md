@@ -21,10 +21,7 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 - **Overwright Themes** - Right now themes can be edited only by entering the same name of a previously saved theme to overwrite it. Future updates should include an overwrite button directly in the menu.
 - **Choose Directory** - The user should be able to change the theme and saved configurations directory themselves
 - **Optimize Settings**
-    - Make it so changing options changes the timer without having to click apply.
-    - Add a cancle button so the user can undo changes instantly.
-    - Make confirmation box on "Load Selected Screen" have an ok an cancle button. Clicking ok should instantly load theme.
-- **Quick Color Picker**
+    - Make confirmation box on "Load Selected Screen" have an ok an cancel button. Clicking ok should instantly load theme.
 
 ## ✨ Features
 
