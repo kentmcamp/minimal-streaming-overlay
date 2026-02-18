@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
+using System.Windows.Controls;
 
 namespace minol
 {
@@ -13,6 +14,15 @@ namespace minol
         public ColorPickerWindow()
         {
             InitializeComponent();
+
+            Left = 0;
+            Top = 0;
+            Width = SystemParameters.PrimaryScreenWidth;
+            Height = SystemParameters.PrimaryScreenHeight;
+
+                // Move InfoPanel programmatically
+    Canvas.SetLeft(InfoPanel, 800);
+    Canvas.SetTop(InfoPanel, 400);
         }
 
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -55,9 +65,13 @@ namespace minol
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-{
-    PickColorUnderCursor();
-}
+        {
+            if (!InfoPanel.IsMouseOver)
+            {
+
+            PickColorUnderCursor();
+            }
+        }
 
 
         private void DisplayColor(Color c)
@@ -72,8 +86,6 @@ namespace minol
             CmykText.Text = $"CMYK: {cmykC}% {cmykM}% {cmykY}% {cmykK}%";
         }
 
-
-
         private void ClearDisplay()
         {
             ColorPreview.Background = System.Windows.Media.Brushes.Transparent;
@@ -81,6 +93,32 @@ namespace minol
             RgbText.Text = "";
             CmykText.Text = "";
         }
+
+        private void InfoPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            InfoPanel.CaptureMouse();
+            InfoPanel.MouseMove += InfoPanel_MouseMove;
+            InfoPanel.MouseLeftButtonUp += InfoPanel_MouseLeftButtonUp;
+        }
+
+        private void InfoPanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                var pos = e.GetPosition(this);
+
+                Canvas.SetLeft(InfoPanel, pos.X - InfoPanel.ActualWidth / 2);
+                Canvas.SetTop(InfoPanel, pos.Y - InfoPanel.ActualHeight / 2);
+            }
+        }
+
+        private void InfoPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            InfoPanel.ReleaseMouseCapture();
+            InfoPanel.MouseMove -= InfoPanel_MouseMove;
+            InfoPanel.MouseLeftButtonUp -= InfoPanel_MouseLeftButtonUp;
+        }
+
 
         private (int, int, int, int) ConvertToCmyk(Color color)
         {

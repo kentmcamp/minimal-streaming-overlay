@@ -5,18 +5,20 @@
         AllowsTransparency="True"
         Background="#01000000"
         Topmost="True"
-        WindowState="Maximized"
+
         ShowInTaskbar="False"
         PreviewMouseDown="Window_PreviewMouseDown"
         >
 
-    <Grid>
+    <Canvas x:Name="RootCanvas">
 
-        <Border Background="#DD1A1A1A"
+        <Border x:Name="InfoPanel"
+                MouseLeftButtonDown="InfoPanel_MouseLeftButtonDown"
+                Background="#DD1A1A1A"
                 CornerRadius="8"
                 Padding="16"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
+                Canvas.Left="800"
+                Canvas.Top="400"
                 Width="320">
 
             <StackPanel>
@@ -47,5 +49,5 @@
             </StackPanel>
         </Border>
 
-    </Grid>
+    </Canvas>
 </Window>
