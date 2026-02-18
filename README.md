@@ -4,17 +4,15 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 
 ## 💾 Installation
 
-1. **Download** the latest release: [minol26.7z](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/1.2.6)
+1. **Download** the latest release: [minol30.7z](https://github.com/kentmcamp/minimal-streaming-overlay/releases/tag/1.3.0)
 2. **Extract** the archive to desired location
 3. **Run** `minol.exe`
 
 *No installation required. The app works immediately out of the zip file.*
 
 ## 🆕 Recent Updates
-- v1.2.6 Stable Release
-    - Added countdown function
-    - Added icons to context menu
-    - Remapped numbers and misc. special characters- 
+- v1.3.0 Stable Release
+    - Added Color Picker
 
 ## 🚧 Planned Updates
 ### Fixes and Patches Planned
@@ -26,10 +24,12 @@ A lightweight, always-on-top Windows overlay that displays a timer and keyboard 
 ## ✨ Features
 
 ### Core Timer Features
-- ⏱️ **Timer** - Click to pause/resume
+- ⏱ **Timer** - Click to pause/resume
 - 🎹 **Keyboard input display** - Shows keys pressed including key combinations.
+- ⏰ **Countdown** - Enter a custome time to count down from.
 - 🔲 **Value Viewer** - Capture a grayscale screenshot of your display, adjust black and white extremes, and change the number of gray tones.
 - 👁️ **Always-on-top overlay** - Stays visible above all windows.
+- 🔍 **Color Picker** - Quickly get the Hex, RGB, and CYMK codes for any color on your display. Includes a zoomed in magnifying glass for precision.
 
 ### Appearance & Customization
 - 🎨 **Full theme management** - Save, load, and delete custom themes.
@@ -64,6 +64,19 @@ When you right-click and select "Analyze Values":
 4. **Drag** the window to move the window.
 5. **Drag the outer edges** of the window to resize it.
 6. **Exit** button closes the analyzer
+
+### Countdown
+When you right-click and select "Count Down":
+1. Pick a time or enter a customer one.
+2. The timer will flash red when it reaches zero.
+   - The same pause/play/reset options that work for the timer will now apply to the countdown.
+  
+### Color Picker
+When you right-click and select "Color Picker":
+1. Click anywhere on your display to select a color.
+   - If the color picker window is in the way, simply drag it.
+2. Click "Toggle Magnifier" or Right-Click to enable the magnifier
+3. Click "Copy" to put the hexcode in your clipboard.
 
 ### Theme Manager
 1. **Right-click** to open the context menu, and select **Edit**
