@@ -5,13 +5,13 @@
         AllowsTransparency="True"
         Background="#01000000"
         Topmost="True"
-
         ShowInTaskbar="False"
         PreviewMouseDown="Window_PreviewMouseDown"
-        >
+        MouseMove="Window_MouseMove">
 
     <Canvas x:Name="RootCanvas">
 
+        <!-- Info Panel -->
         <Border x:Name="InfoPanel"
                 MouseLeftButtonDown="InfoPanel_MouseLeftButtonDown"
                 Background="#DD1A1A1A"
@@ -33,20 +33,78 @@
                         Margin="0,0,0,12"
                         CornerRadius="4"/>
 
-                <TextBlock x:Name="HexText" Foreground="White"/>
-                <TextBlock x:Name="RgbText" Foreground="White"/>
-                <TextBlock x:Name="CmykText" Foreground="White"/>
+                <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="0,0,0,4">
+                    <TextBlock x:Name="HexText"
+                               Foreground="White"
+                               VerticalAlignment="Center"/>
+                    <Button x:Name="CopyHexButton"
+                            Content="Copy"
+                            Margin="8,0,0,0"
+                            Click="CopyHexButton_Click"
+                            Visibility="Collapsed"/>
+                </StackPanel>
+
+
+                <TextBlock x:Name="RgbText"
+                           Foreground="White"/>
+                <TextBlock x:Name="CmykText"
+                           Foreground="White"/>
 
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Margin="0,12,0,0">
+                    <Button x:Name="MagnifierToggleButton"
+                            Content="Toggle Magnifier"
+                            Margin="4"
+                            Click="MagnifierToggleButton_Click"/>
+                </StackPanel>
 
+
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,12,0,0">
                     <Button Content="Exit"
                             Margin="4"
                             Click="Exit_Click"/>
                 </StackPanel>
 
             </StackPanel>
+        </Border>
+
+        <!-- Magnifier Panel -->
+        <Border x:Name="MagnifierPanel"
+                Width="120"
+                Height="120"
+                Background="#DD000000"
+                BorderBrush="White"
+                BorderThickness="2"
+                CornerRadius="8"
+                Visibility="Collapsed"
+                Canvas.Left="0"
+                Canvas.Top="0">
+            <Canvas x:Name="MagnifierCanvas">
+                <Image x:Name="MagnifierImage"
+                       Width="120"
+                       Height="120"/>
+                <!-- Crosshair lines -->
+                <Line x:Name="CrosshairHorizontal"
+                      Stroke="White"
+                      StrokeThickness="1"
+                      X1="0"
+                      Y1="60"
+                      X2="120"
+                      Y2="60"/>
+                <Line x:Name="CrosshairVertical"
+                      Stroke="White"
+                      StrokeThickness="1"
+                      X1="60"
+                      Y1="0"
+                      X2="60"
+                      Y2="120"/>
+            </Canvas>
         </Border>
 
     </Canvas>
